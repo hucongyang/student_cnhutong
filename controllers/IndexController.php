@@ -12,7 +12,6 @@ class IndexController extends ApiPublicController
         echo time() + strtotime('+ 30day') . "\n";
         echo date("H") . "\n";
         echo date("H-i-s");
-        echo phpinfo();
         echo "ji zhi de yang ren jie";
     }
 
