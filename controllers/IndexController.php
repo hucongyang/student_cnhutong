@@ -13,6 +13,7 @@ class IndexController extends ApiPublicController
         echo date("H") . "\n";
         echo date("H-i-s");
         echo phpinfo();
+        echo "ji zhi de yang ren jie";
     }
 
     public function actionJson()
