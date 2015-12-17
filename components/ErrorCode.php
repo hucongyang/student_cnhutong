@@ -15,22 +15,15 @@ $_error_code = array(
 
 	    // 用户相关错误码
         'MSG_ERR_NO_USER'                   => array('20001', '用户不存在'),
-        'MSG_ERR_PASSWORD_ERR'              => array('20002', '系统用户，不能登录'),
-        'MSG_ERR_PASSWORD_WRONG'            => array('20003', '您输入的密码错误'),
-        'MSG_ERR_TOKEN'                     => array('20004', 'TOKEN验证错误'),
-        'MSG_ERR_DEPARTMENT'                => array('20005', '校区不存在'),
-		'MSG_ERR_FAIL_LESSONSTUDENTIDS'		=> array('20006', '课时参数错误'),
-		'MSG_ERR_FAIL_LESSON_FORMAT'		=> array('20007', '课时格式错误'),
-		'MSG_ERR_FAIL_LESSONDETAILS'		=> array('20008', '课时详情参数错误'),
-		'MSG_ERR_FAIL_DATE_FORMAT'			=> array('20009', '日期格式错误'),
-		'MSG_ERR_FAIL_DATE_LESS'			=> array('20010', '缺少必要的日期内容'),
-		'MSG_ERR_FAIL_SUBJECT'				=> array('20011', '课程参数错误'),
-		'MSG_ERR_FAIL_DEPARTMENT'			=> array('20012', '校区参数错误'),
-		'MSG_ERR_FAIL_STUDENT'				=> array('20013', '学员参数错误'),
-		'MSG_ERR_FAIL_MESSAGE'				=> array('20014', '留言参数错误'),
-		'MSG_ERR_FAIL_NAME'					=> array('20015', '名称格式错误'),
-		'MSG_ERR_FAIL_REASON'				=> array('20016', '投诉格式错误'),
-		'MSG_ERR_FAIL_PAGE'					=> array('20017', '分页参数错误'),
+        'MSG_ERR_FAIL_MOBILE'				=> array('20002', '非法的手机号码'),
+        'MSG_ERR_FAIL_CODE_TYPE'			=> array('20003', '非法的验证码类型'),
+        'MSG_ERR_INVALID_MOBILE'			=> array('20004', '该手机号码已被注册'),
+        'MSG_ERR_UN_REGISTER_MOBILE'		=> array('20005', '该手机号码未注册,请先注册'),
+        'MSG_ERR_CODE'						=> array('20006', 'CODE验证错误'),
+        'MSG_ERR_SET_SAME_PASSWORD'			=> array('20007', '用户名不能与密码相同'),
+        'MSG_ERR_PASSWORD_WRONG'			=> array('20008', '您输入的密码错误'),
+        'MSG_ERR_FAIL_USER'					=> array('20009', '用户ID格式错误'),
+        'MSG_ERR_TOKEN'						=> array('20010', 'token错误'),
 
 
 		// 其它
