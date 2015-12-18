@@ -154,7 +154,7 @@ class UserController extends ApiPublicController
             $user_id = User::model()->insertUser($mobile, $username, $password, $register_time, $last_login_time, 0);
 
             // 创建token
-            Token::model()->insertUserToken($user_id);
+            $token = Token::model()->insertUserToken($user_id);
 
             // 修改验证码使用状态
             Code::model()->updateCode($mobile, $code, 1);
@@ -170,8 +170,6 @@ class UserController extends ApiPublicController
         if($user_id <= 0) {
             $this->_return('MSG_ERR_UNKOWN');
         }
-
-        $token = Token::model()->getUserToken($user_id);
 
         // 发送返回值
         $data = array();
