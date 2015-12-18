@@ -355,4 +355,123 @@ class UserController extends ApiPublicController
             $this->_return('MSG_ERR_TOKEN');
         }
     }
+
+    /**
+     * 用户绑定学员信息
+     */
+    public function actionBindMember()
+    {
+        if (!isset($_REQUEST['userId']) || !isset($_REQUEST['token'])
+        || !isset($_REQUEST['salt']) || !isset($_REQUEST['mobile'])
+        || !isset($_REQUEST['code']) || empty($_REQUEST['userId'])
+        || empty($_REQUEST['token']) || empty($_REQUEST['salt'])
+        || empty($_REQUEST['mobile']) || empty($_REQUEST['code'])) {
+            $this->_return('MSG_ERR_LESS_PARAM');
+        }
+
+        $user_id = trim(Yii::app()->request->getParam('userId', null));
+        $token = trim(Yii::app()->request->getParam('token', null));
+        $salt = trim(Yii::app()->request->getParam('salt', null));
+        $mobile = trim(Yii::app()->request->getParam('mobile', null));
+        $code = trim(Yii::app()->request->getParam('code', null));
+
+        // 用户ID格式错误
+        if (!ctype_digit($user_id)) {
+            $this->_return('MSG_ERR_FAIL_USER');
+        }
+
+        // 用户不存在，返回错误
+        if ($user_id < 1) {
+            $this->_return('MSG_ERR_NO_USER');
+        }
+
+        // 验证token
+        if (!Token::model()->verifyToken($user_id, $token)) {
+            $this->_return('MSG_ERR_TOKEN');
+        }
+
+        // 验证码是否过期
+        if (!Code::model()->verifyCode($mobile, $code, 3)) {
+            $this->_return('MSG_ERR_CODE');
+        }
+
+        // 口令/手机号码 对应的用户是否存在
+        $memberId = User::model()->verifySaltMobile($salt, $mobile);
+        if (!$memberId) {
+            $this->_return('MSG_ERR_SALT_MOBILE');
+        }
+
+        // 验证要添加的memberId是否和userId有绑定关系存在
+        $existMemberId = User::model()->existUserIdMemberId($user_id, $memberId);
+        if ($existMemberId) {
+            $this->_return('MSG_ERR_INVALID_MEMBER');
+        }
+
+        // 验证绑定的学员ID数量,目前最多4个
+        $countMemberId = User::model()->bindMemberNum($user_id);
+        if ($countMemberId >= 4) {
+            $this->_return('MSG_ERR_OVER_MEMBER');
+        }
+
+        // 创建事务
+        $user_transaction = Yii::app()->cnhutong->beginTransaction();
+        try {
+
+            $nowTime = date("Y-m-d H:i:s");
+            // 建立绑定关系
+            User::model()->insertUserIdMemberId($user_id, $memberId, 1, $nowTime);
+
+            // 修改验证码使用状态
+            Code::model()->updateCode($mobile, $code, 3);
+
+            // 提交事务
+            $user_transaction->commit();
+        } catch (Exception $e) {
+            error_log($e);
+            $user_transaction->rollback();
+            $this->_return('MSG_ERR_UNKOWN');
+        }
+
+        $this->_return('MSG_SUCCESS');
+
+    }
+
+    /**
+     * 获得个人信息: 基本信息/绑定信息
+     */
+    public function actionGetUserInfo()
+    {
+        if (!isset($_REQUEST['userId']) || !isset($_REQUEST['token'])) {
+            $this->_return('MSG_ERR_LESS_PARAM');
+        }
+
+        $user_id = trim(Yii::app()->request->getParam('userId'));
+        $token = trim(Yii::app()->request->getParam('token'));
+
+        // 用户ID格式错误
+        if (!ctype_digit($user_id)) {
+            $this->_return('MSG_ERR_FAIL_USER');
+        }
+
+        // 用户不存在，返回错误
+        if ($user_id < 1) {
+            $this->_return('MSG_ERR_NO_USER');
+        }
+
+        $data = array();
+        // 验证token
+        if (Token::model()->verifyToken($user_id, $token)) {
+
+            $userInfo = User::model()->getUserInfo($user_id);
+            // 用户基本信息
+            $data['nickName'] = $userInfo['username'];
+            $data['points'] = $userInfo['score'];
+            // 用户绑定信息
+            $data['members'] = User::model()->getMembers($user_id);
+            $this->_return('MSG_SUCCESS', $data);
+
+        } else {
+            $this->_return('MSG_ERR_TOKEN');
+        }
+    }
 }

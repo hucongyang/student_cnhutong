@@ -94,7 +94,7 @@ class Code extends CActiveRecord
     }
 
     /**
-     * 注册成功后,修改验证码的使用状态
+     * 注册成功/修改密码/绑定帐号后,修改验证码的使用状态
      * @param $mobile
      * @param $code
      * @param $type

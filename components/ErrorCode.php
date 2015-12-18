@@ -24,6 +24,14 @@ $_error_code = array(
         'MSG_ERR_PASSWORD_WRONG'			=> array('20008', '您输入的密码错误'),
         'MSG_ERR_FAIL_USER'					=> array('20009', '用户ID格式错误'),
         'MSG_ERR_TOKEN'						=> array('20010', 'token错误'),
+        'MSG_ERR_SALT_MOBILE'				=> array('20011', '口令对应的手机号码错误'),
+        'MSG_ERR_INVALID_MEMBER'			=> array('20012', '口令对应用户memberId已绑定'),
+        'MSG_ERR_OVER_MEMBER'				=> array('20013', '该用户已经绑定4个学员ID'),
+        'MSG_ERR_FAIL_DATE_FORMAT'			=> array('20014', '日期格式错误'),
+        'MSG_ERR_MEMBERS'					=> array('20015', '学员ID格式错误'),
+        'MSG_ERR_FAIL_MEMBER'				=> array('20016', '存在非法的memberId'),
+        'MSG_ERR_OVER_MEMBER_NUMBER'		=> array('20017', '超过规定数量memberId'),
+        'MSG_ERR_FAIL_DATE_LESS'			=> array('20018', '缺少必要的日期内容'),
 
 
 		// 其它
