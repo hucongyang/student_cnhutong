@@ -59,7 +59,6 @@ class LessonController extends ApiPublicController
             $this->_return('MSG_ERR_FAIL_DATE_LESS');
         }
 
-        $data = array();
         // 验证token
         if (Token::model()->verifyToken($user_id, $token)) {
             // 获取日历课程
@@ -69,7 +68,6 @@ class LessonController extends ApiPublicController
         } else {
             $this->_return('MSG_ERR_TOKEN');
         }
-
-
+        
     }
 }
