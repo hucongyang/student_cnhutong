@@ -81,4 +81,42 @@ class Lesson extends CActiveRecord
         }
         return $data;
     }
+
+    /**
+     * 获取课时详情接口
+     * @param $lessonStudentId
+     * @return bool
+     */
+    public function getLessonDetails($lessonStudentId)
+    {
+        try {
+            $con_user = Yii::app()->cnhutong;
+            $sql = "SELECT
+                      a.date AS lessonDate, a.time AS lessonTime,
+                      a.status_id as lessonStatus,
+                      e.id AS courseId, e.course AS courseName,
+                      a.department_id AS departmentId, d.name AS departmentName,
+                      a.teacher_id AS teacherId, c.name AS teacherName,
+                      a.student_id AS memberId, b.name AS memberName,
+                      ifnull(a.lesson_content, '') AS lessonContent,
+                      IFNULL(a.teacher_rating, '') AS teacherGrade, a.teacher_comment AS teacherEval,
+                      IFNULL(a.student_rating, '') AS studentGrade, a.student_comment AS studentEval
+                    FROM ht_lesson_student a
+                      LEFT JOIN ht_member b ON a.student_id=b.id
+                      LEFT JOIN ht_member c ON a.teacher_id=c.id
+                      LEFT JOIN ht_department d ON a.department_id=d.id
+                      LEFT JOIN ht_course e ON a.course_id=e.id
+                    WHERE a.step>=0 and a.step not in(4,5)
+                          AND a.status_id NOT IN (5)
+                      AND a.id = " . $lessonStudentId ."
+                    GROUP BY time
+                    ORDER BY date,time";
+            $command = $con_user->createCommand($sql)->queryAll();
+            $data = $command;
+        } catch (Exception $e) {
+            error_log($e);
+            return false;
+        }
+        return $data;
+    }
 }

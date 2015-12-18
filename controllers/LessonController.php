@@ -68,6 +68,46 @@ class LessonController extends ApiPublicController
         } else {
             $this->_return('MSG_ERR_TOKEN');
         }
-        
+    }
+
+    /**
+     * 获取课时详情
+     */
+    public function actionGetLessonDetails()
+    {
+        if (!isset($_REQUEST['userId']) || !isset($_REQUEST['token'])
+            || !isset($_REQUEST['lessonStudentId'])) {
+            $this->_return('MSG_ERR_LESS_PARAM');
+        }
+
+        $user_id = trim(Yii::app()->request->getParam('userId'));
+        $token = trim(Yii::app()->request->getParam('token'));
+        $lessonStudentId = trim(Yii::app()->request->getParam('lessonStudentId'));
+
+        if (!ctype_digit($user_id)) {
+            $this->_return('MSG_ERR_FAIL_PARAM');
+        }
+
+        // 用户名不存在,返回错误
+        if ($user_id < 1) {
+            $this->_return('MSG_ERR_NO_USER');
+        }
+
+        if (empty($lessonStudentId) || $lessonStudentId <= 0) {
+            $this->_return('MSG_ERR_FAIL_LESSON_STUDENT_ID');
+        }
+
+        // 验证token
+        if (Token::model()->verifyToken($user_id, $token)) {
+            // 获取学员详细信息
+            $data = Lesson::model()->getLessonDetails($lessonStudentId);
+            if (!$data) {
+                $this->_return('MSG_NO_LESSON_STUDENT_ID');
+            }
+            $this->_return('MSG_SUCCESS', $data);
+        } else {
+            $this->_return('MSG_ERR_TOKEN');
+        }
+
     }
 }

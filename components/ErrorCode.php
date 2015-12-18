@@ -32,9 +32,13 @@ $_error_code = array(
         'MSG_ERR_FAIL_MEMBER'				=> array('20016', '存在非法的memberId'),
         'MSG_ERR_OVER_MEMBER_NUMBER'		=> array('20017', '超过规定数量memberId'),
         'MSG_ERR_FAIL_DATE_LESS'			=> array('20018', '缺少必要的日期内容'),
+		'MSG_ERR_FAIL_STUDENT'				=> array('20019', '学员参数错误'),
+		'MSG_NO_MEMBER'						=> array('20020', '不存在的学员'),
+		'MSG_ERR_FAIL_LESSON_STUDENT_ID'	=> array('20021', '课时编号错误'),
+		'MSG_NO_LESSON_STUDENT_ID'			=> array('20022', '不存在的课时编号'),
 
 
-		// 其它
+	// 其它
 		'MSG_ERR_FAIL_SQL'					=> array('88888', 'SQL执行错误'),
 		'MSG_ERR_UNKOWN'			=> array('99999', '系统繁忙，请稍后再试')
 );
