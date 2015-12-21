@@ -48,7 +48,7 @@ class Token extends CActiveRecord
             $token = $con_token->createCommand()
                 ->select('token')
                 ->from($table_name)
-                ->where('id = :id', array(':id' => $user_id))
+                ->where('user_id = :user_id', array(':user_id' => $user_id))
                 ->queryScalar();
         } catch (Exception $e) {
             error_log($e);
@@ -76,9 +76,9 @@ class Token extends CActiveRecord
                     'create_ts' => $time,
                     'expire_ts' => $expire_ts
                 ),
-                'id = :id',
+                'user_id = :user_id',
                 array(
-                    ':id' => $user_id
+                    ':user_id' => $user_id
                 )
             );
         } catch (Exception $e) {
@@ -105,9 +105,9 @@ class Token extends CActiveRecord
                     'create_ts' => $time,
                     'expire_ts' => $yesterday
                 ),
-                'id = :id',
+                'user_id = :user_id',
                 array(
-                    ':id' => $user_id
+                    ':user_id' => $user_id
                 )
             );
         } catch (Exception $e) {
@@ -131,7 +131,7 @@ class Token extends CActiveRecord
             $result = $con_token->createCommand()
                 ->select('token, expire_ts')
                 ->from($table_name)
-                ->where('id = :id', array(':id' => $user_id))
+                ->where('user_id = :user_id', array(':user_id' => $user_id))
                 ->queryRow();
         } catch (Exception $e) {
             error_log($e);
