@@ -32,6 +32,12 @@ class StudentController extends ApiPublicController
             $this->_return('MSG_ERR_FAIL_STUDENT');
         }
 
+        // 验证要添加的memberId是否和userId有绑定关系存在
+        $existMemberId = User::model()->existUserIdMemberId($user_id, $memberId);
+        if (!$existMemberId) {
+            $this->_return('MSG_ERR_FAIL_MEMBER');
+        }
+
         // 验证token
         if (Token::model()->verifyToken($user_id, $token)) {
             // 获取学员详细信息
