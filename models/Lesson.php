@@ -12,14 +12,19 @@ class Lesson extends CActiveRecord
 
     /**
      * 判断数组里面是否有字符串元素,要求全是整数
+     * @param $user_id
      * @param $member
      * @return bool
      */
-    public function isIntMember($member)
+    public function isIntMember($user_id, $member)
     {
         if (is_array($member)) {
             foreach ($member as $k => $v) {
                 if (!is_numeric($v)) {
+                    return false;
+                }
+
+                if (!User::model()->existUserIdMemberId($user_id, $v)) {
                     return false;
                 }
             }

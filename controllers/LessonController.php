@@ -36,8 +36,8 @@ class LessonController extends ApiPublicController
             $this->_return('MSG_ERR_MEMBERS');
         }
 
-        // 验证是否都是整数
-        if (!Lesson::model()->isIntMember($member)) {
+        // 验证是否都是整数/是否与user_id具有绑定关系
+        if (!Lesson::model()->isIntMember($user_id, $member)) {
             $this->_return('MSG_ERR_FAIL_MEMBER');
         }
 
