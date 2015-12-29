@@ -116,7 +116,7 @@ class Lesson extends CActiveRecord
                       AND a.id = " . $lessonStudentId ."
                     GROUP BY time
                     ORDER BY date,time";
-            $command = $con_user->createCommand($sql)->queryAll();
+            $command = $con_user->createCommand($sql)->queryRow();
             $data = $command;
         } catch (Exception $e) {
             error_log($e);
