@@ -62,7 +62,7 @@ class Lesson extends CActiveRecord
             // 日历课程,具体日期课时状态
             $sql2 = "SELECT
                     a.id AS lessonStudentId, a.date AS lessonDate, a.time AS lessonTime,
-                    a.status_id as lessonStatus, s.id AS stujectId, s.title AS subjectName,
+                    a.step as step, s.id AS stujectId, s.title AS subjectName,
                     a.department_id AS departmentId, d.name AS departmentName,
                     a.teacher_id AS teacherId, c.name AS teacherName,
                     a.student_id AS memberId, b.name AS memberName
@@ -98,7 +98,7 @@ class Lesson extends CActiveRecord
             $con_user = Yii::app()->cnhutong;
             $sql = "SELECT
                       a.date AS lessonDate, a.time AS lessonTime,
-                      a.status_id as lessonStatus,
+                      a.step,
                       e.id AS courseId, e.course AS courseName,
                       a.department_id AS departmentId, d.name AS departmentName,
                       a.teacher_id AS teacherId, c.name AS teacherName,
