@@ -76,7 +76,6 @@ class Lesson extends CActiveRecord
                     AND a.status_id NOT IN (5)
                     AND a.student_id IN (" . $member . ")
                     AND date = '" . $year . "-" . $month . "-" . $day . "'
-                    GROUP BY time
                     ORDER BY date,time";
             $command2 = $con_lesson->createCommand($sql2)->queryAll();
             $data['lessonDay'] = $command2;
