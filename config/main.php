@@ -16,10 +16,13 @@ return array(
 		'application.models.*',
         'application.extensions.*',
 		'application.components.*',
+		'application.modules.*',
 	),
 
 	'modules'=>array(
         // uncomment the following to enable the Gii tool
+		// 教师版模块
+		'teacher',
         'gii'=>array(
             'class'=>'system.gii.GiiModule',
             'password'=>'123456',                  

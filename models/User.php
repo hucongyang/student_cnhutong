@@ -138,8 +138,12 @@ class User extends CActiveRecord
      * @param $last_login_time
      * @return bool
      */
-    public function updateLastLoginTime($user_id, $last_login_time)
+    public function updateLastLoginTime($user_id, $last_login_time = null)
     {
+        if ($last_login_time == null) {
+            $last_login_time = date("Y-m-d H:i:s");
+        }
+
         try {
             $con_user = Yii::app()->cnhutong;
             $table_name = 'com_user';

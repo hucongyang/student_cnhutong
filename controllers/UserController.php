@@ -211,6 +211,8 @@ class UserController extends ApiPublicController
             // 返回更新的token
             $token = Token::model()->updateUserToken($user_id);
             if ($token) {
+                // 更新登录时间
+                User::model()->updateLastLoginTime($user_id);
                 $data['userId'] = $user_id;
                 $data['token'] = $token;
                 $this->_return('MSG_SUCCESS', $data);
@@ -253,6 +255,8 @@ class UserController extends ApiPublicController
             $token = Token::model()->updateUserToken($user_id);
 
             if ($token) {
+                // 更新登录时间
+                User::model()->updateLastLoginTime($user_id);
                 // 写入日志，更新用户信息
                 $data['userId']             = $user_id;
                 $data['token']              = $token;
@@ -308,6 +312,9 @@ class UserController extends ApiPublicController
             // 修改验证码使用状态
             Code::model()->updateCode($mobile, $code, 2);
 
+            // 更新登录时间
+            User::model()->updateLastLoginTime($user_id);
+
             // 提交事务
             $user_transaction->commit();
         } catch (Exception $e) {
@@ -346,6 +353,8 @@ class UserController extends ApiPublicController
         if (Token::model()->verifyToken($user_id, $token)) {
             // 指定token过期
             if (Token::model()->expireToken($user_id)) {
+                // 更新登录时间
+                User::model()->updateLastLoginTime($user_id);
                 // 退出不写LOG
                 $this->_return('MSG_SUCCESS');
             }
