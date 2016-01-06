@@ -62,7 +62,7 @@ class LessonController extends ApiPublicController
         // 验证token
         if (Token::model()->verifyToken($user_id, $token)) {
             // 获取日历课程
-            $data = Lesson::model()->getStudentSchedule($member, $year, $month, $day);
+            $data = Lesson::model()->getStudentSchedule($member, $year, $month, $day, $date);
             $this->_return('MSG_SUCCESS', $data);
 
         } else {
