@@ -17,11 +17,15 @@ class Lesson extends CActiveRecord
      * @param $year
      * @param $month
      * @param $day
+     * @param $date
      * @return array|bool
      */
-    public function getSubjectSchedule($user_id, $year, $month, $day)
+    public function getSubjectSchedule($user_id, $year, $month, $day, $date)
     {
         $data = array();
+        $dateTime = strtotime($date);
+        $nextDate = date("Y-m", strtotime('+1 month', $dateTime));     // 当前年月的下一月
+        $nowDate = date("Y-m", strtotime($date));                   // 当前年月
         try {
             $con_lesson = Yii::app()->cnhutong;
             // 日历课程,每日签到状态
@@ -29,8 +33,9 @@ class Lesson extends CActiveRecord
                     t1.date as lessonDate, min(t1.status_id) as lessonStatus
                     FROM ht_lesson_student AS t1
                     WHERE teacher_id = '" . $user_id . "' AND t1.step>=0 and  t1.step not in(4,5,6)
-                    AND t1.status_id not in(5)
-                    AND t1.date LIKE '" . $year . "-" . $month . "%" . "'
+                    AND t1.status_id != 5
+                    AND t1.date < '" . $nextDate . "-" . 01 . "'
+                    AND t1.date > '" . $nowDate . "-" . 01 . "'
                     GROUP BY t1.date";
             $command1 = $con_lesson->createCommand($sql1)->queryAll();
             $data['lessons'] = $command1;
