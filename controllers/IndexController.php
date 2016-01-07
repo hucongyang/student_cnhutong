@@ -2,18 +2,11 @@
 /**
  * IndexController 默认控制器
  */
-class IndexController extends ApiPublicController
+class IndexController extends Controller
 {
     public function actionIndex()
     {
-        echo "Test The YII Framework" . "\n";
-        echo date("Y-m-d H:i:s", strtotime("now")) . "\n";
-        echo "HELLO WORLD" . "\n";
-        echo time() + strtotime('+ 30day') . "\n";
-        echo date("H") . "\n";
-        echo date("H-i-s");
-        echo "ji zhi de yang ren jie";
-        echo "yyy";
+        $this->renderPartial('index');
     }
 
     public function actionJson()
