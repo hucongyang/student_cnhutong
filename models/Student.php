@@ -39,7 +39,7 @@ class Student extends CActiveRecord
             // 学员合同信息
             $sql2 = "select ct.id AS contractId, cd.id AS contractDetailId, ct.contract_serial AS contractSerialId,
                       cd.course_id AS courseId, ifnull(c.course, '') AS courseName,
-                      cd.teacher_id AS teacherId, m.name AS teacherName,
+                      cd.teacher_id AS teacherId, ifnull(m.name, '') AS teacherName,
                       cd.lesson_cnt AS cntLesson, ifnull(cd.lesson_finished_cnt, '') AS finishLesson,
                       ifnull(cd.start_date, '') AS startDate, ifnull(cd.end_date, '') AS endDate
                     from ht_contract ct LEFT JOIN ht_contract_detail cd on ct.id=cd.contract_id
