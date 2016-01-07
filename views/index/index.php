@@ -32,7 +32,7 @@
                             <img src="/public/images/teacher_app.png">
                         </td>
                         <td style="text-align: center">
-                            <img src="/public/images/teacher_app.png">
+                            <img src="/public/images/student_app.png">
                         </td>
                     </tr>
                 </tbody>

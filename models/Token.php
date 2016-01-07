@@ -59,7 +59,7 @@ class Token extends CActiveRecord
 
     /**
      * 更新用户系统中的token值
-     * @param $user_id          int         -- 用户ID
+     * @param $user_id          int          -- 用户ID
      * @return bool|string  $token
      */
     public function updateUserToken($user_id)

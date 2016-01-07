@@ -44,7 +44,7 @@ return array(
             'connectionString' => 'mysql:host=127.0.0.1;dbname=cnhutong',
             'emulatePrepare' => true,
             'username' => 'root',
-            'password' => 'root',
+            'password' => '111111',
             'charset' => 'utf8',
             'class' =>  'CDbConnection',
             //'tablePrefix' => 'tbl_',
