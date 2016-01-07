@@ -188,7 +188,7 @@ class Task extends CActiveRecord
             $con_task = Yii::app()->cnhutong;
             // 获得任务签到
             $sql = "SELECT
-                    a.id AS lessonStudentId, a.student_id AS studenId, b.`name` AS studentName, a.step
+                    a.id AS lessonStudentId, a.student_id AS studentId, b.`name` AS studentName, a.step
                     FROM ht_lesson_student AS a
                     LEFT JOIN ht_member b ON a.student_id = b.id
                     WHERE a.step >= 0 AND a.step NOT IN (4,5)
