@@ -28,8 +28,10 @@
 
                     // 是否为iPhone或者QQHD浏览器
 
-                    iPhone: u.indexOf('iPhone') > -1
+                    iPhone: u.indexOf('iPhone') > -1,
 
+                    // 是否iPad
+                    iPad: u.indexOf('iPad') > -1
                 };
 
             }()
@@ -49,6 +51,10 @@
         }else if(Terminal.platform.iPhone){
 
             theUrl = 'http://apptest.cnhutong.com/public/app/teacher/iOS';
+
+        }else if(Terminal.platform.iPad){
+
+            theUrl = 'http://www.baidu.com';
 
         }
 

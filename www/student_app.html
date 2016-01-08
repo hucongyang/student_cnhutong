@@ -28,8 +28,10 @@
 
                     // 是否为iPhone或者QQHD浏览器
 
-                    iPhone: u.indexOf('iPhone') > -1
+                    iPhone: u.indexOf('iPhone') > -1,
 
+                    // 是否iPad
+                    iPad: u.indexOf('iPad') > -1
                 };
 
             }()
@@ -50,9 +52,11 @@
 
             theUrl = 'http://www.pgyer.com/cpZ8';
 
+        }else if(Terminal.platform.iPad){
+
+            theUrl = 'http://www.pgyer.com/cpZ8';
+
         }
-
-
 
         location.href = theUrl;
 

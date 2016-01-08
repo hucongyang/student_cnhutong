@@ -22,7 +22,7 @@
                             <h3>教师版(Android)</h3>
                         </th>
                         <th style="text-align: center" class="success">
-                            <h3>学员版(Android/iOS)</h3>
+                            <h3>学员版(Android/iOS/iPAD)</h3>
                         </th>
                     </tr>
                 </thead>
