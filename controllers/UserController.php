@@ -64,6 +64,15 @@ class UserController extends ApiPublicController
             $this->_return('MSG_ERR_UNKOWN');
         }
 
+        // 增加用户操作log
+        $action_id = 2104;
+        $params = '';
+        foreach ($_REQUEST as $key => $value)  {
+            $params .= $key . '=' . $value . '&';
+        }
+        $params = substr($params, 0, -1);
+        Log::model()->action_log($user_id = 0, $action_id, $params);
+
         $this->_return('MSG_SUCCESS', $code);
 
     }
@@ -96,6 +105,16 @@ class UserController extends ApiPublicController
         }
 
         if (Code::model()->verifyCode($mobile, $code, $codeType)) {
+
+            // 增加用户操作log
+            $action_id = 2105;
+            $params = '';
+            foreach ($_REQUEST as $key => $value)  {
+                $params .= $key . '=' . $value . '&';
+            }
+            $params = substr($params, 0, -1);
+            Log::model()->action_log($user_id = 0, $action_id, $params);
+
             $this->_return('MSG_SUCCESS');
         } else {
             $this->_return('MSG_ERR_CODE');
@@ -159,6 +178,18 @@ class UserController extends ApiPublicController
             // 修改验证码使用状态
             Code::model()->updateCode($mobile, $code, 1);
 
+            // 增加用户操作log
+            $action_id = 2106;
+            $params = '';
+            foreach ($_REQUEST as $key => $value)  {
+                $params .= $key . '=' . $value . '&';
+            }
+            $params = substr($params, 0, -1);
+            Log::model()->action_log($user_id, $action_id, $params);
+
+            // 增加用户登录log
+            Log::model()->user_log($user_id);
+
             // 提交事务
             $user_transaction->commit();
         } catch (Exception $e) {
@@ -215,6 +246,19 @@ class UserController extends ApiPublicController
                 User::model()->updateLastLoginTime($user_id);
                 $data['userId'] = $user_id;
                 $data['token'] = $token;
+
+                // 增加用户操作log
+                $action_id = 2101;
+                $params = '';
+                foreach ($_REQUEST as $key => $value)  {
+                    $params .= $key . '=' . $value . '&';
+                }
+                $params = substr($params, 0, -1);
+                Log::model()->action_log($user_id, $action_id, $params);
+
+                // 增加用户登录log
+                Log::model()->user_log($user_id);
+
                 $this->_return('MSG_SUCCESS', $data);
             } else {
                 $this->_return('MSG_ERR_UNKOWN');
@@ -257,9 +301,21 @@ class UserController extends ApiPublicController
             if ($token) {
                 // 更新登录时间
                 User::model()->updateLastLoginTime($user_id);
-                // 写入日志，更新用户信息
                 $data['userId']             = $user_id;
                 $data['token']              = $token;
+
+                // 增加用户操作log
+                $action_id = 2102;
+                $params = '';
+                foreach ($_REQUEST as $key => $value)  {
+                    $params .= $key . '=' . $value . '&';
+                }
+                $params = substr($params, 0, -1);
+                Log::model()->action_log($user_id, $action_id, $params);
+
+                // 增加用户登录log
+                Log::model()->user_log($user_id);
+
                 $this->_return('MSG_SUCCESS', $data);
             } else {
                 $this->_return('MSG_ERR_UNKOWN');
@@ -315,6 +371,18 @@ class UserController extends ApiPublicController
             // 更新登录时间
             User::model()->updateLastLoginTime($user_id);
 
+            // 增加用户操作log
+            $action_id = 2107;
+            $params = '';
+            foreach ($_REQUEST as $key => $value)  {
+                $params .= $key . '=' . $value . '&';
+            }
+            $params = substr($params, 0, -1);
+            Log::model()->action_log($user_id, $action_id, $params);
+
+            // 增加用户登录log
+            Log::model()->user_log($user_id);
+
             // 提交事务
             $user_transaction->commit();
         } catch (Exception $e) {
@@ -355,7 +423,19 @@ class UserController extends ApiPublicController
             if (Token::model()->expireToken($user_id)) {
                 // 更新登录时间
                 User::model()->updateLastLoginTime($user_id);
-                // 退出不写LOG
+
+                // 增加用户操作log
+                $action_id = 2108;
+                $params = '';
+                foreach ($_REQUEST as $key => $value)  {
+                    $params .= $key . '=' . $value . '&';
+                }
+                $params = substr($params, 0, -1);
+                Log::model()->action_log($user_id, $action_id, $params);
+
+                // 增加用户登录log
+                Log::model()->user_log($user_id);
+
                 $this->_return('MSG_SUCCESS');
             }
         } else {
@@ -431,6 +511,15 @@ class UserController extends ApiPublicController
             // 修改验证码使用状态
             Code::model()->updateCode($mobile, $code, 3);
 
+            // 增加用户操作log
+            $action_id = 2109;
+            $params = '';
+            foreach ($_REQUEST as $key => $value)  {
+                $params .= $key . '=' . $value . '&';
+            }
+            $params = substr($params, 0, -1);
+            Log::model()->action_log($user_id, $action_id, $params);
+
             // 提交事务
             $user_transaction->commit();
         } catch (Exception $e) {
@@ -475,6 +564,16 @@ class UserController extends ApiPublicController
             $data['points'] = $userInfo['score'];
             // 用户绑定信息
             $data['members'] = User::model()->getMembers($user_id);
+
+            // 增加用户操作log
+            $action_id = 2103;
+            $params = '';
+            foreach ($_REQUEST as $key => $value)  {
+                $params .= $key . '=' . $value . '&';
+            }
+            $params = substr($params, 0, -1);
+            Log::model()->action_log($user_id, $action_id, $params);
+
             $this->_return('MSG_SUCCESS', $data);
 
         } else {

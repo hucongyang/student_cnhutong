@@ -45,6 +45,16 @@ class StudentController extends ApiPublicController
             if (!$data) {
                 $this->_return('MSG_NO_MEMBER');
             }
+
+            // 增加用户操作log
+            $action_id = 2301;
+            $params = '';
+            foreach ($_REQUEST as $key => $value)  {
+                $params .= $key . '=' . $value . '&';
+            }
+            $params = substr($params, 0, -1);
+            Log::model()->action_log($user_id, $action_id, $params);
+
             $this->_return('MSG_SUCCESS', $data);
         } else {
             $this->_return('MSG_ERR_TOKEN');

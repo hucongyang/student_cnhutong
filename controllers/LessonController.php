@@ -63,6 +63,16 @@ class LessonController extends ApiPublicController
         if (Token::model()->verifyToken($user_id, $token)) {
             // 获取日历课程
             $data = Lesson::model()->getStudentSchedule($member, $year, $month, $day, $date);
+
+            // 增加用户操作log
+            $action_id = 2201;
+            $params = '';
+            foreach ($_REQUEST as $key => $value)  {
+                $params .= $key . '=' . $value . '&';
+            }
+            $params = substr($params, 0, -1);
+            Log::model()->action_log($user_id, $action_id, $params);
+
             $this->_return('MSG_SUCCESS', $data);
 
         } else {
@@ -104,6 +114,16 @@ class LessonController extends ApiPublicController
             if (!$data) {
                 $this->_return('MSG_NO_LESSON_STUDENT_ID');
             }
+
+            // 增加用户操作log
+            $action_id = 2202;
+            $params = '';
+            foreach ($_REQUEST as $key => $value)  {
+                $params .= $key . '=' . $value . '&';
+            }
+            $params = substr($params, 0, -1);
+            Log::model()->action_log($user_id, $action_id, $params);
+
             $this->_return('MSG_SUCCESS', $data);
         } else {
             $this->_return('MSG_ERR_TOKEN');

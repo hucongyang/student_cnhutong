@@ -11,19 +11,22 @@ class ApiPublicController extends Controller
 
     public function __construct()
     {
-        // 检查参数
-//        if(!isset($_REQUEST['department']) || !isset($_REQUEST['mac']) || !isset($_REQUEST['apiVer']))
-//            {
-//            $this->_return('MSG_ERR_LESS_PARAM');
-//        }
-        // $_department_id = 1;
-        // TODO : 此处考虑记录访问LOG
+		if (!isset($_REQUEST['version']) || !isset($_REQUEST['device_id'])
+		|| !isset($_REQUEST['platform']) || !isset($_REQUEST['channel'])
+		|| !isset($_REQUEST['app_version']) || !isset($_REQUEST['os_version'])
+		|| !isset($_REQUEST['app_id']) ) {
+			$this->_return('MSG_ERR_LESS_PARAM');
+		}
 
-        // 秦汉胡同APP log公共参数 检查参数
-//        if(!isset($_REQUEST['version']) || !isset($_REQUEST['deviceId']) || !isset($_REQUEST['platform']) || !isset($_REQUEST['channel'])
-//            || !isset($_REQUEST['appVersion']) || !isset($_REQUEST['osVersion']) || !isset($_REQUEST['appId'])) {
-//            $this->_return('MSG_ERR_LESS_PARAM');
-//        }
+		// 获取全局变量的值
+		$GLOBALS['__IP']				= Yii::app()->request->userHostAddress;
+		$GLOBALS['__VERSION']			= trim(Yii::app()->request->getParam('version'));
+		$GLOBALS['__DEVICE_ID']			= trim(Yii::app()->request->getParam('device_id'));
+		$GLOBALS['__PLATFORM']			= trim(Yii::app()->request->getParam('platform'));
+		$GLOBALS['__CHANNEL']			= trim(Yii::app()->request->getParam('channel'));
+		$GLOBALS['__APP_VERSION']		= trim(Yii::app()->request->getParam('app_version'));
+		$GLOBALS['__OS_VERSION']		= trim(Yii::app()->request->getParam('os_version'));
+		$GLOBALS['__APP_ID']			= trim(Yii::app()->request->getParam('app_id'));
     }
 
 	/*******************************************************

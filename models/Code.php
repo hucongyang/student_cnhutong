@@ -52,7 +52,6 @@ class Code extends CActiveRecord
             ));
         } catch (Exception $e) {
             error_log($e);
-            var_dump($e);
             return false;
         }
         return true;

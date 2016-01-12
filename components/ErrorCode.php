@@ -11,6 +11,7 @@ $_error_code = array(
 		'MSG_SUCCESS' 				        => array('10000', '成功'),
 		'MSG_ERR_LESS_PARAM' 		        => array('10001', '请求缺少必要的参数'),
 		'MSG_ERR_FAIL_PARAM' 		        => array('10002', '请求参数错误'),
+		'MSG_ERR_FAIL_UPDATE_VERSION' 		=> array('10003', '更新版本失败'),
 
 
 	    // 用户相关错误码
@@ -36,6 +37,7 @@ $_error_code = array(
 		'MSG_NO_MEMBER'						=> array('20020', '不存在的学员'),
 		'MSG_ERR_FAIL_LESSON_STUDENT_ID'	=> array('20021', '课时编号错误'),
 		'MSG_NO_LESSON_STUDENT_ID'			=> array('20022', '不存在的课时编号'),
+		'MSG_ERR_FAIL_PLATFORM|APP_ID'		=> array('20023', '平台|应用编号错误'),
 
 
 	// 其它
