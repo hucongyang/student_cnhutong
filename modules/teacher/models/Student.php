@@ -98,9 +98,9 @@ class Student extends CActiveRecord
 
             // 学员合同信息
             $sql2 = "select ct.id AS contractId, cd.id AS contractDetailId, ct.contract_serial AS contractSerialId,
-                      ifnull(cd.course_id, 0) AS courseId, ifnull(c.course, '') AS courseName,
+                      ifnull(cd.course_id, '0') AS courseId, ifnull(c.course, '') AS courseName,
                       cd.teacher_id AS teacherId, ifnull(m.name, '') AS teacherName,
-                      ifnull(cd.lesson_cnt, 0) AS cntLesson, ifnull(cd.lesson_finished_cnt, 0) AS finishLesson,
+                      ifnull(cd.lesson_cnt, '0') AS cntLesson, ifnull(cd.lesson_finished_cnt, '0') AS finishLesson,
                       ifnull(cd.start_date, '') AS startDate, ifnull(cd.end_date, '') AS endDate
                     from ht_contract ct LEFT JOIN ht_contract_detail cd on ct.id=cd.contract_id
                       LEFT JOIN ht_member m on m.id = cd.teacher_id
@@ -139,7 +139,7 @@ class Student extends CActiveRecord
                 // 缺课课程
                 $result2['lessLesson']                  = self::getLessLessonByContractDetailId($row['contractSerialId']);
                 if (empty($result2['lessLesson'])) {
-                    $result2['lessLesson'] = 0;
+                    $result2['lessLesson'] = '0';
                 }
                 $result2['startDate']                   = $row['startDate'];
                 $result2['endDate']                   = $row['endDate'];
