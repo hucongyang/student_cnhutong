@@ -297,4 +297,165 @@ class User extends CActiveRecord
         }
         return $data;
     }
+
+    /**
+     * 用户提交留言信息接口
+     * @param $user_id
+     * @param $teacherId
+     * @param $content
+     * @return array|bool
+     */
+    public function postMessage($user_id, $teacherId, $content)
+    {
+        $dateTime = date('Y-m-d H:i:s');
+        try {
+            $con_user = Yii::app()->cnhutong;
+            $table_name = 'com_app_message';
+            $data = $con_user->createCommand()->insert($table_name,
+                array(
+                    'teacher_id'            => $teacherId,
+                    'student_id'            => $user_id,
+                    'admin_id'              => $user_id,
+                    'date_time'             => $dateTime,
+                    'content'               => $content,
+                    'status'                => 0
+                )
+            );
+        } catch (Exception $e) {
+            error_log($e);
+            return false;
+        }
+        return $data;
+    }
+
+    /**
+     * 用户查看留言列表接口
+     * @param $user_id
+     * @return array|bool
+     */
+    public function myMessageList($user_id)
+    {
+        try {
+            $con_user = Yii::app()->cnhutong;
+            $result = $con_user->createCommand()
+                ->select('c.id AS messageId, c.student_id AS studentId, m.name AS studentName,
+                c.date_time AS dateTime, c.content AS content, c.status')
+                ->from('com_app_message c')
+                ->leftjoin('ht_member m', 'c.student_id = m.id')
+                ->where('c.student_id = :user_id', array(':user_id' => $user_id))
+                ->group('c.teacher_id')
+                ->order('c.id desc')
+                ->queryAll();
+            $data = $result;
+        } catch (Exception $e) {
+            error_log($e);
+            return false;
+        }
+        return $data;
+    }
+
+    /**
+     * 用户查看留言详情接口
+     * @param $user_id
+     * @param $teacherId
+     * @param $messageId
+     * @return bool
+     */
+    public function myMessageDetail($user_id, $teacherId, $messageId)
+    {
+        if ($messageId == 0) {
+            $where = null;
+        } else {
+            $where = " AND c.id < $messageId ";
+        }
+
+        try {
+            $con_user = Yii::app()->cnhutong;
+            $sql = "SELECT
+                    c.id AS messageId, c.student_id AS studentId, c.date_time AS dateTime,
+                    c.content AS content, c.teacher_id AS teacherId, c.admin_id AS adminId, m.name, c.status
+                    FROM com_app_message c
+                    LEFT JOIN ht_member m ON c.admin_id = m.id
+                    WHERE ((c.admin_id = " . $user_id . " AND c.teacher_id = " . $teacherId . ")
+                    OR (c.admin_id = " . $teacherId . " AND c.student_id = " . $user_id . "))
+                    " . $where . "
+                    ORDER BY c.date_time DESC LIMIT 5";
+            $commend = $con_user->createCommand($sql)->queryAll();
+
+            $message = array();
+            $data = array();
+            foreach ($commend as $row) {
+                self::updateAppMessageStatus($row['messageId']);      // 改变留言状态
+                $message['messageId']               = $row['messageId'];
+                if ($row['adminId'] == $row['teacherId']) {
+                    unset($message['studentId']);
+                    unset($message['studentName']);
+                    $message['teacherName']         = $row['name'];
+                    $message['teacherId']           = $row['teacherId'];
+                } else if ($row['adminId'] == $row['studentId']) {
+                    unset($message['teacherId']);
+                    unset($message['teacherName']);
+                    $message['studentId']           = $row['studentId'];
+                    $message['studentName']         = $row['name'];
+                }
+                $message['dateTime']                = $row['dateTime'];
+                $message['content']                 = $row['content'];
+                $data['messageDetails'][]    = $message;
+            }
+
+        } catch (Exception $e) {
+            error_log($e);
+            var_dump($e);
+            return false;
+        }
+        return $data;
+    }
+
+    /**
+     * 用户查看留言详情接口后,留言未读信息状态status改为1（已读）
+     * @param $messageId
+     * @return bool
+     */
+    public function updateAppMessageStatus($messageId)
+    {
+        try {
+            $con_user = Yii::app()->cnhutong;
+            $table_name = 'com_app_message';
+            $data = $con_user->createCommand()->update($table_name,
+                array(
+                    'status'                => 1
+                ),
+                'id = :messageId',
+                array(
+                    ':messageId' => $messageId
+                )
+            );
+        } catch (Exception $e) {
+            error_log($e);
+            return false;
+        }
+        return $data;
+    }
+
+    /**
+     * 用户投诉信息接口
+     * @return bool
+     */
+    public function myComplaint()
+    {
+        try {
+            $con_user = Yii::app()->cnhutong;
+            $table_name = '';
+            $data = $con_user->createCommand()->insert($table_name,
+                array(
+                    ''
+                )
+            );
+
+        } catch (Exception $e) {
+            error_log($e);
+            return false;
+        }
+        return $data;
+    }
 }

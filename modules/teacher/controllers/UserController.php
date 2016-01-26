@@ -276,7 +276,7 @@ class UserController extends ApiPublicController
     }
 
     /**
-     * 教师查看留言详情接口
+     * 教师查看留言列表接口
      */
     public function actionMyMessageList()
     {

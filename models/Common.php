@@ -7,6 +7,12 @@ class Common extends CActiveRecord
         return parent::model($className);
     }
 
+    /**
+     * 获取最新版本
+     * @param $platform     平台
+     * @param $app_id       应用编号
+     * @return bool
+     */
     public function updateVersion($platform, $app_id)
     {
         try {

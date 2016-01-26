@@ -5,6 +5,11 @@
  */
 class CommonController extends ApiPublicController
 {
+    /**
+     * 版本升级
+     * $GLOBALS['__PLATFORM']   系统平台: 1-Android; 2-iOS
+     * $GLOBALS['__APP_ID']     应用编号: 10-学员端; 11-教师端
+     */
     public function actionUpdateVersion()
     {
         $platform = intval(trim($GLOBALS['__PLATFORM']));
@@ -29,6 +34,17 @@ class CommonController extends ApiPublicController
             if (empty($data)) {
                 $this->_return('MSG_ERR_FAIL_UPDATE_VERSION');
             } else {
+
+                // 增加用户操作log
+                $action_id = 2401;
+                $params = '';
+                foreach ($_REQUEST as $key => $value)  {
+                    $params .= $key . '=' . $value . '&';
+                }
+                $params = substr($params, 0, -1);
+                Log::model()->action_log(0, $action_id, $params);
+
+
                 $this->_return('MSG_SUCCESS', $data);
             }
 

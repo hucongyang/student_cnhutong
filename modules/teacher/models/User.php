@@ -232,7 +232,7 @@ class User extends CActiveRecord
                 c.date_time AS dateTime, c.content AS content, c.status')
                 ->from('com_app_message c')
                 ->leftjoin('ht_member m', 'c.student_id = m.id')
-                ->where('c.admin_id = :user_id', array(':user_id' => $user_id))
+                ->where('c.teacher_id = :user_id', array(':user_id' => $user_id))
                 ->group('c.student_id')
                 ->order('c.id desc')
                 ->queryAll();
@@ -273,6 +273,7 @@ class User extends CActiveRecord
             $commend = $con_user->createCommand($sql)->queryAll();
 
             $message = array();
+            $data = array();
             foreach ($commend as $row) {
                 self::updateAppMessageStatus($row['messageId']);      // 改变留言状态
                 $message['messageId']               = $row['messageId'];
