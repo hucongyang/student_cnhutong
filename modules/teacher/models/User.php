@@ -157,7 +157,7 @@ class User extends CActiveRecord
             $command = $con_user->createCommand($sql)->queryAll();
             $result = array();
             foreach ($command as $row) {
-                $result['subjects']                 = $row['subjectId'];
+                $result['subjectId']                 = $row['subjectId'];
                 $result['subjectName']              = $row['subjectName'];
                 $data[] = $result;
             }
@@ -169,17 +169,116 @@ class User extends CActiveRecord
     }
 
     /**
-     * 教师查看工资信心接口:
+     * 教师查看工资信息接口:
      * 月份默认为当前月份（$date）到月初（1号）的工资
      * @param $user_id
      * @param $date
      * @param $departmentId
      * @return array|bool
      */
-    public function myReword($user_id, $date, $departmentId)
+    public function myReward($user_id, $date, $departmentId)
     {
+        $dateStr = $date."-01";
+        $dateStart = date("Y-m-d", strtotime($dateStr));       // 当前月第一天
+        $dateEnd = date("Y-m-d", strtotime("$dateStart +1 month -1 day"));    // 当前月最后一天
+
         $data = array();
         try {
+            $con_task = Yii::app()->cnhutong;
+            // 获得任务列表
+            // 前一天
+            $sql1 = "SELECT m.id as teacher_id, m.name AS mname,b.name AS department, a.department_id, " .
+                "SUM(a.lesson_cnt_charged) AS lesson_cnt_charged,SUM(a.lesson_price*a.lesson_cnt_charged) AS lesson_price, " .
+                "AVG(CASE WHEN a.lesson_teacher_fee_rate>0 THEN a.lesson_teacher_fee_rate ELSE g.rate END) AS rate, " .
+                "SUM(CASE WHEN a.lesson_teacher_fee>0 THEN a.lesson_teacher_fee ELSE a.lesson_cnt_charged*lesson_price*g.rate END) AS lesson_fee, " .
+                "a.status_id,a.lesson_confirmed_time, CASE WHEN a.step=0 THEN '正常' WHEN a.step=1 THEN '补课' " .
+                "WHEN a.step=2 THEN '缺勤' WHEN a.step=3 THEN '弃课' " .
+                "WHEN a.step=6 THEN '请假' WHEN a.step=4 THEN '冻结' WHEN a.step=5 THEN '退费' WHEN a.step=7 THEN '顺延补课' " .
+                "WHEN a.step=8 THEN '补课后弃课' ELSE '其他' END step, " .
+                "a.step AS step_id, sum(case when TO_DAYS(lesson_confirmed_time) - TO_DAYS(date)>36 then " .
+                "CASE WHEN a.lesson_teacher_fee>0 THEN a.lesson_teacher_fee ELSE a.lesson_cnt_charged*lesson_price*g.rate END else 0 end) as over_delayed_lesson_fee, " .
+                "sum(case when TO_DAYS(lesson_confirmed_time) - TO_DAYS(date)>36 then lesson_cnt_charged else 0 end) as over_delayed_lesson_cnt, " .
+                "sum(case when TO_DAYS(lesson_confirmed_time) - TO_DAYS(date)>8 then CASE WHEN a.lesson_teacher_fee>0 THEN a.lesson_teacher_fee ELSE " .
+                "a.lesson_cnt_charged*lesson_price*g.rate END else 0 end) as delayed_lesson_fee,sum(case when (TO_DAYS(lesson_confirmed_time) - TO_DAYS(date)>8) " .
+                "and (TO_DAYS(lesson_confirmed_time) - TO_DAYS(date)<=36) then lesson_cnt_charged else 0 end) as delayed_lesson_cnt " .
+                "FROM ht_lesson_salary_rate g,ht_lesson_student a LEFT JOIN ht_member AS m ON a.teacher_id=m.id " .
+                "LEFT JOIN ht_department b ON a.department_id=b.id LEFT JOIN ht_course d ON a.`course_id`=d.`id` " .
+                "WHERE d.subject_id=g.subject_id	#AND share_scope>0 " .
+                "AND d.id=a.course_id AND a.lesson_range=g.lesson_range AND a.department_id = ".$departmentId." " .
+                "AND a.teacher_id=" . $user_id . " " .
+                "AND DATE>='".$dateStart."' AND DATE <='".$dateEnd."' AND a.step>=0 AND a.step NOT IN(4,5) AND a.status_id NOT IN(5) " .
+                "group by a.department_id, a.status_id, a.step,a.teacher_id";
+            $query = $con_task->createCommand($sql1)->queryAll();
+
+            $sumNum = array();
+
+            $sumNum["lesson_fee_hr_ge61"] = 0;
+            $sumNum["lesson_cnt_hr_ge61"] = 0;
+            $sumNum["lesson_fee_hr_60"] = 0;
+            $sumNum["lesson_cnt_hr_60"] = 0;
+            $sumNum["lesson_fee_made"] = 0;
+            $sumNum["lesson_cnt_charged_made"] = 0;
+            $sumNum["delayedLessonFee"] = 0;
+            $sumNum["delayedLessonCnt"] = 0;
+            $sumNum["lesson_fee"] = 0;
+            $sumNum["lesson_cnt_charged"] = 0;
+
+            foreach($query as $key=>$lesson){
+
+                if(($lesson["step_id"]==0 || $lesson["step_id"]==1)&&$lesson["status_id"]!=5){
+
+                    $sumNum["lesson_cnt_charged"] += $lesson["lesson_cnt_charged"];
+                    $sumNum["lesson_fee"] += $lesson["lesson_fee"];
+
+                    $sumNum["delayedLessonCnt"] += $lesson["delayed_lesson_cnt"];
+                    $sumNum["delayedLessonFee"] += $lesson["delayed_lesson_fee"];
+                    $sumNum["overDelayedLessonCnt"] += $lesson["over_delayed_lesson_cnt"];
+                    $sumNum["overDelayedLessonFee"] += $lesson["over_delayed_lesson_fee"];
+
+                    if($lesson["status_id"]==50 ||$lesson["status_id"]==60 || $lesson["status_id"]==61 || $lesson["status_id"]==62){
+                        $sumNum["lesson_cnt_charged_made"] += $lesson["lesson_cnt_charged"];
+                        $sumNum["lesson_fee_made"] += $lesson["lesson_fee"];
+                    }
+                    if($lesson["status_id"]==60){
+                        $sumNum["lesson_cnt_hr_60"] += $lesson["lesson_cnt_charged"];
+                        $sumNum["lesson_fee_hr_60"] += $lesson["lesson_fee"];
+                    }
+                    if($lesson["status_id"]==61 || $lesson["status_id"]==62){
+                        $sumNum["lesson_cnt_hr_ge61"] += $lesson["lesson_cnt_charged"];
+                        $sumNum["lesson_fee_hr_ge61"] += $lesson["lesson_fee"];
+                        $sumNum["lesson_fee_confirmed_hr_61"] += $lesson["lesson_fee"];
+                        if($lesson["lesson_confirmed_time"]!="" && $lesson["lesson_confirmed_time"]!="null"){
+                            $intervalDays = (strtotime(substr($lesson["lesson_confirmed_time"],0,10))-strtotime($lesson["date"]))/86400000;
+                            if($intervalDays>36){
+                                $sumNum["overDelayedLessonCnt_hr_61"] += $lesson["lesson_cnt_charged"];
+                            }else if($intervalDays>8){
+                                $sumNum["delayedLessonCnt_hr_61"] += $lesson["lesson_cnt_charged"];
+                            }
+                        }
+                    }
+                }
+            }
+
+            //已发放课时工资
+            $data['hasSalary'] = sprintf("%.2f", $sumNum["lesson_fee_hr_ge61"]);
+            //已发放课时数
+            $data['hasCourse'] = $sumNum["lesson_cnt_hr_ge61"];
+            //可发放课时工资
+            $data['currentSalary'] = sprintf("%.2f", $sumNum["lesson_fee_hr_60"]);
+            //可发放课时数
+            $data['currentCourse'] = $sumNum["lesson_cnt_hr_60"];
+            //课时收入
+            $data['plannedSalary'] = sprintf("%.2f", $sumNum["lesson_fee_made"]);
+            //完成课时数
+            $data['plannedCourse'] = $sumNum["lesson_cnt_charged_made"];
+            //延时调整
+            $data['delaySalary'] = sprintf("%.2f", $sumNum["delayedLessonFee"]/2);
+            //延时课时
+            $data['delayCourse'] = $sumNum["delayedLessonCnt"];
+            //排课课时收入
+            $data['arrangeSalary'] = sprintf("%.2f", $sumNum["lesson_fee"]);
+            //排课课时
+            $data['arrangeCourse'] = $sumNum["lesson_cnt_charged"];
 
         } catch (Exception $e) {
             error_log($e);

@@ -206,7 +206,7 @@ class UserController extends ApiPublicController
     /**
      * 教师查看工资接口
      */
-    public function actionMyRecord()
+    public function actionMyReward()
     {
         if (!isset($_REQUEST['teacherId']) || !isset($_REQUEST['token'])
         || !isset($_REQUEST['date']) || !isset($_REQUEST['departmentId'])) {
@@ -227,10 +227,19 @@ class UserController extends ApiPublicController
             $this->_return('MSG_ERR_NO_USER');
         }
 
+        // 验证日期格式合法
+        if (!$this->isDate($date)) {
+            $this->_return('MSG_ERR_FAIL_DATE_FORMAT');
+        }
+
+        if (!ctype_digit($departmentId) || $departmentId < 1) {
+            $this->_return('MSG_ERR_DEPARTMENT');
+        }
+
         // 验证token
         if (Token::model()->verifyToken($user_id, $token)) {
             // 教师查看工资
-            $data = User::model()->myReword($user_id, $date, $departmentId);
+            $data = User::model()->myReward($user_id, $date, $departmentId);
             $this->_return('MSG_SUCCESS', $data);
         } else {
             $this->_return('MSG_ERR_TOKEN');
