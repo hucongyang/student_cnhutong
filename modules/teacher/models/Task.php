@@ -218,7 +218,7 @@ class Task extends CActiveRecord
         try {
             $con_task = Yii::app()->cnhutong;
             $table_name = 'ht_lesson_student';
-            // 按照课时ID进行签到,ht_lesson_student: status_id = 1(老师签到),step = 0 正常| step = 2 缺勤
+            // 按照课时ID进行签到,ht_lesson_student: status_id = 1(老师签到),step = 0 正常, step = 1 补课, step = 2 缺勤, step = 6 请假
             foreach ($lessonJson as $row) {
                 // 需要对$lessonJson里面的数值做判断 if...
                 $result = $con_task->createCommand()->update($table_name,

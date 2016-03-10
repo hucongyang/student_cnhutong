@@ -195,18 +195,22 @@ class User extends CActiveRecord
         $data = array();
         try {
             $con_user = Yii::app()->cnhutong;
-            $sql = "SELECT ls.course_id AS courseId, c.course AS courseName
+            $sql = "SELECT ls.course_id AS courseId, c.course AS courseName,
+                           s.id AS subjectId, s.title AS subjectName
                     FROM ht_lesson_student AS ls
                     LEFT JOIN ht_course AS c ON ls.course_id = c.id
+                    LEFT JOIN ht_subject AS s ON c.subject_id = s.id
                     WHERE ls.teacher_id = " . $user_id . " GROUP BY course_id";
             $command = $con_user->createCommand($sql)->queryAll();
             $result = array();
             foreach ($command as $row) {
                 $result['courseId']                 = $row['courseId'];
                 $result['courseName']               = $row['courseName'];
+                $result['subjectId']                = $row['subjectId'];
+                $result['subjectName']              = $row['subjectName'];
                 $data[] = $result;
             }
-            var_dump($sql);
+
         } catch (Exception $e) {
             error_log($e);
             return false;
