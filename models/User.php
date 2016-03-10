@@ -437,18 +437,30 @@ class User extends CActiveRecord
         return $data;
     }
 
+
     /**
      * 用户投诉信息接口
+     * @param $user_id
+     * @param $departmentId
+     * @param $name
+     * @param $reason
+     * @param $flag
      * @return bool
      */
-    public function myComplaint()
+    public function myComplaint($user_id, $departmentId, $name, $reason, $flag)
     {
+        $nowTime = date('Y-m-d H:i:s');
         try {
             $con_user = Yii::app()->cnhutong;
-            $table_name = '';
+            $table_name = 'com_feedback';
             $data = $con_user->createCommand()->insert($table_name,
                 array(
-                    ''
+                    'user_id'           => $user_id,
+                    'department_id'     => $departmentId,
+                    'name'              => $name,
+                    'reason'            => $reason,
+                    'flag'              => $flag,
+                    'create_ts'         => $nowTime
                 )
             );
 

@@ -363,14 +363,14 @@ class UserController extends ApiPublicController
     public function actionMyComplaint()
     {
         if (!isset($_REQUEST['teacherId']) || !isset($_REQUEST['token'])
-        || !isset($_REQUEST['departmentName']) || !isset($_REQUEST['name'])
+        || !isset($_REQUEST['departmentId']) || !isset($_REQUEST['name'])
         || !isset($_REQUEST['reason'])) {
             $this->_return('MSG_ERR_LESS_PARAM');
         }
 
         $user_id = trim(Yii::app()->request->getParam('teacherId', null));
         $token = trim(Yii::app()->request->getParam('token', null));
-        $departmentName = trim(Yii::app()->request->getParam('departmentName', null));
+        $departmentId = trim(Yii::app()->request->getParam('departmentId', null));
         $name = trim(Yii::app()->request->getParam('name', null));
         $reason = trim(Yii::app()->request->getParam('reason', null));
 
@@ -383,7 +383,7 @@ class UserController extends ApiPublicController
             $this->_return('MSG_ERR_NO_USER');
         }
 
-        if (empty($departmentName) || !preg_match("/^[\x7f-\xff]+$/", $departmentName)) {
+        if (!ctype_digit($departmentId) || $departmentId < 1) {
             $this->_return('MSG_ERR_FAIL_DEPARTMENT');
         }
 
@@ -398,8 +398,8 @@ class UserController extends ApiPublicController
         // 验证token
         if (Token::model()->verifyToken($user_id, $token)) {
             // 教师投诉/举手信息
-            $data = '1';
-            $this->_return('MSG_SUCCESS', $data);
+            User::model()->myComplaint($user_id, $departmentId, $name, $reason, 1);
+            $this->_return('MSG_SUCCESS');
         } else {
             $this->_return('MSG_ERR_TOKEN');
         }

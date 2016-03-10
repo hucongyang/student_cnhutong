@@ -692,4 +692,48 @@ class UserController extends ApiPublicController
         }
     }
 
+
+    /**
+     *  用户投诉/举手
+     */
+    public function actionMyComplaint()
+    {
+        if (!isset($_REQUEST['userId']) || !isset($_REQUEST['token'])
+            || !isset($_REQUEST['departmentId']) || !isset($_REQUEST['name'])
+            || !isset($_REQUEST['reason'])) {
+            $this->_return('MSG_ERR_LESS_PARAM');
+        }
+
+        $user_id = trim(Yii::app()->request->getParam('userId', null));
+        $token = trim(Yii::app()->request->getParam('token', null));
+        $departmentId = trim(Yii::app()->request->getParam('departmentId', null));
+        $name = trim(Yii::app()->request->getParam('name', null));
+        $reason = trim(Yii::app()->request->getParam('reason', null));
+
+        // 用户名不存在,返回错误
+        if (!ctype_digit($user_id) || $user_id < 1) {
+            $this->_return('MSG_ERR_NO_USER');
+        }
+
+        if (!ctype_digit($departmentId) || $departmentId < 1) {
+            $this->_return('MSG_ERR_FAIL_DEPARTMENT');
+        }
+
+        if (empty($name) || !preg_match("/^[\x7f-\xff]+$/", $name)) {
+            $this->_return('MSG_ERR_FAIL_NAME');
+        }
+
+        if (empty($reason)) {
+            $this->_return('MSG_ERR_FAIL_REASON');
+        }
+
+        // 验证token
+        if (Token::model()->verifyToken($user_id, $token)) {
+            // 用户投诉/举手信息
+            User::model()->myComplaint($user_id, $departmentId, $name, $reason, 2);
+            $this->_return('MSG_SUCCESS');
+        } else {
+            $this->_return('MSG_ERR_TOKEN');
+        }
+    }
 }
