@@ -19,7 +19,8 @@ class Common extends CActiveRecord
             $com_common = Yii::app()->cnhutong;
             $table_name = 'com_channel';
             $result = $com_common->createCommand()
-                ->select('new_version as newVersion, download as url, create_ts as updateTime, content as updateContent')
+                ->select('last_version as lastVersion, new_version as newVersion, download as url,
+                          create_ts as updateTime, content as updateContent')
                 ->from($table_name)
                 ->where('platform = :platform AND app_id = :app_id',
                     array(
