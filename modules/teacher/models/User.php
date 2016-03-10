@@ -100,6 +100,23 @@ class User extends CActiveRecord
                 $command['subjects'] = array();
             }
 
+            // 获得该教师的科目信息
+            $courses = self::getCourseByUserId($user_id);
+            if ($courses) {
+                $command['courses'] = $courses;
+            } else {
+                $command['courses'] = array();
+            }
+
+            // 获得该教师的教室信息
+            $classrooms = self::getClassroomByDepartment($command['departmentManaged']);
+            if ($classrooms) {
+                $command['classrooms'] = $classrooms;
+            } else {
+                $command['classrooms'] = array();
+            }
+
+
             // 释放 departmentManaged
             unset($command['departmentManaged']);
             $data = $command;
@@ -159,6 +176,66 @@ class User extends CActiveRecord
             foreach ($command as $row) {
                 $result['subjectId']                 = $row['subjectId'];
                 $result['subjectName']              = $row['subjectName'];
+                $data[] = $result;
+            }
+        } catch (Exception $e) {
+            error_log($e);
+            return false;
+        }
+        return $data;
+    }
+
+    /**
+     * 根据教师ID 获得教师科目
+     * @param $user_id
+     * @return array|bool
+     */
+    public function getCourseByUserId($user_id)
+    {
+        $data = array();
+        try {
+            $con_user = Yii::app()->cnhutong;
+            $sql = "SELECT ls.course_id AS courseId, c.course AS courseName
+                    FROM ht_lesson_student AS ls
+                    LEFT JOIN ht_course AS c ON ls.course_id = c.id
+                    WHERE ls.teacher_id = " . $user_id . " GROUP BY course_id";
+            $command = $con_user->createCommand($sql)->queryAll();
+            $result = array();
+            foreach ($command as $row) {
+                $result['courseId']                 = $row['courseId'];
+                $result['courseName']               = $row['courseName'];
+                $data[] = $result;
+            }
+            var_dump($sql);
+        } catch (Exception $e) {
+            error_log($e);
+            return false;
+        }
+        return $data;
+    }
+
+    /**
+     * 根据校区id获得教室列表
+     * @param $department_managed
+     * @return array|bool
+     */
+    public function getClassroomByDepartment($department_managed)
+    {
+        $data = array();
+        try {
+            $con_user = Yii::app()->cnhutong;
+            $sql = "SELECT c.id AS classroomId, c.department_id as departmentId,
+                    d.name AS departmentName, c.name AS classroomName
+                    FROM ht_classroom AS c
+                    LEFT JOIN ht_department AS d ON c.department_id = d.id
+                    WHERE c.department_id in (" . $department_managed .") AND c.step >= 0";
+            $command = $con_user->createCommand($sql)->queryAll();
+            $result = array();
+            foreach ($command as $row) {
+                $result['classroomId']                 = $row['classroomId'];
+                $result['classroomName']               = $row['classroomName'];
+                $result['departmentId']                = $row['departmentId'];
+                $result['departmentName']              = $row['departmentName'];
                 $data[] = $result;
             }
         } catch (Exception $e) {
@@ -439,6 +516,184 @@ class User extends CActiveRecord
                     ''
                 )
             );
+
+        } catch (Exception $e) {
+            error_log($e);
+            return false;
+        }
+        return $data;
+    }
+
+    /**
+     * 教师获得补课学员信息
+     * @param $user_id
+     * @param $page
+     * @param $courseId
+     * @return array|bool
+     */
+    public function myExtraLessonStudentList($user_id, $page, $courseId)
+    {
+        $data = array();
+        try {
+
+            $page = $page * 10;
+            $pageLimit = " limit $page, 10";
+
+            $con_user = Yii::app()->cnhutong;
+            $sql = "SELECT cd.student_id, m.name, c.end_date
+                    FROM ht_contract_detail AS cd
+                    LEFT JOIN ht_contract AS c ON cd.contract_id = c.id
+                    LEFT JOIN ht_member AS m ON cd.student_id = m.id
+                    WHERE cd.teacher_id = " . $user_id ." AND cd.course_id = " . $courseId . "
+                    AND c.end_date > now() " . $pageLimit . "
+                    ";
+            $command = $con_user->createCommand($sql)->queryAll();
+            $data['extraStudents']  = $command;
+
+        } catch (Exception $e) {
+            error_log($e);
+            return false;
+        }
+        return $data;
+    }
+
+    /**
+     * 教师提交补课信息
+     * @param $user_id
+     * @param $departmentId
+     * @param $courseId
+     * @param $classroomId
+     * @param $extraTime
+     * @param $studentJson
+     * @param $extraReason
+     * @return array|bool
+     */
+    public function postExtraLesson($user_id, $departmentId, $courseId, $classroomId, $extraTime, $studentJson, $extraReason)
+    {
+        $data = array();
+        $nowTime = date('Y-m-d H:i:s');
+        try {
+            $con_user = Yii::app()->cnhutong;
+
+            // 补课表添加数据
+            $result1 = $con_user->createCommand()->insert('com_extra',
+                array(
+                    'member_id'         => $user_id,
+                    'extra_time'        => $extraTime,
+                    'department_id'     => $departmentId,
+                    'course_id'         => $courseId,
+                    'classroom_id'      => $classroomId,
+                    'create_time'       => $nowTime,
+                    'update_time'       => $nowTime,
+                    'flag'              => 1,
+                    'status'            => 1,
+                    'type'              => 2,
+                    'reason'            => $extraReason
+                )
+            );
+            // 获取补课表id
+            $extraId = Yii::app()->cnhutong->getLastInsertID();
+
+
+            // 补课详情表添加数据
+            foreach ($studentJson as $row) {
+                $result2 = $con_user->createCommand()->insert('com_extra_detail',
+                    array(
+                        'extra_id'          => $extraId,
+                        'member_id'         => $row['studentId'],
+                        'status'            => 0,
+                        'create_time'       => $nowTime,
+                        'update_time'       => $nowTime,
+                        'create_user_id'    => 0,
+                        'update_user_id'    => 0,
+                    )
+                );
+            }
+
+
+        } catch (Exception $e) {
+            error_log($e);
+            return false;
+        }
+        return $data;
+    }
+
+
+    /**
+     * 教师查看补课列表
+     * @param $user_id
+     * @param $page
+     * @param $status
+     * @return array|bool
+     */
+    public function myExtraLessonList($user_id, $page, $status)
+    {
+        try {
+
+            $page = $page * 10;
+            $pageLimit = " limit $page, 10";
+
+            if ($status == 0) {
+                $extraStatus = "";
+            } else {
+                $extraStatus = "and ce.status = ". $status ." ";
+            }
+
+            $con_user = Yii::app()->cnhutong;
+            $sql = "SELECT ce.id AS extraId, ce.course_id AS courseId, c.course AS courseName,
+                    ce.department_id AS departmentId, d.department AS departmentName,
+                    ce.extra_time AS extraTime, ce.create_time AS createTime,
+                    ce.status AS extraStatus, ce.type
+                    FROM com_extra AS ce
+                    LEFT JOIN ht_course AS c ON ce.course_id = c.id
+                    LEFT JOIN ht_department d ON ce.department_id = d.id
+                    WHERE ce.member_id = ". $user_id ."
+                    " . $extraStatus ."
+                    order by ce.create_time desc ". $pageLimit ." ";
+            $command = $con_user->createCommand($sql)->queryAll();
+            $data['extraLessons']  = $command;
+
+        } catch (Exception $e) {
+            error_log($e);
+            var_dump($e);
+            return false;
+        }
+        return $data;
+    }
+
+    /**
+     * 教师查看补课详情
+     * @param $extraId
+     * @return bool
+     */
+    public function myExtraLessonDetail($extraId)
+    {
+        try {
+
+            $con_user = Yii::app()->cnhutong;
+            $sql = "SELECT ce.id AS extraId, ce.course_id AS courseId, c.course AS courseName,
+                    ce.department_id AS departmentId, d.department AS departmentName,
+                    ce.extra_time AS extraTime, ce.create_time AS createTime,
+                    ce.status AS extraStatus, ce.type,
+                    ce.classroom_id AS classroomId, class.name AS classroomName,
+                    ce.member_id AS memberId, m.name AS memberName
+                    FROM com_extra AS ce
+                    LEFT JOIN ht_course AS c ON ce.course_id = c.id
+                    LEFT JOIN ht_department d ON ce.department_id = d.id
+                    LEFT JOIN ht_classroom class ON ce.classroom_id = class.id
+                    LEFT JOIN ht_member m ON ce.member_id = m.id
+                    WHERE ce.id = ". $extraId ."
+                    order by ce.create_time desc ";
+            $command = $con_user->createCommand($sql)->queryAll();
+            $data['extraDetail']  = $command;
+
+            $sqlStudent = "SELECT ed.member_id AS studentId, m.name AS studentName,
+                           ed.status AS studentStatus, ed.update_time AS updateTime
+                           FROM com_extra_detail ed
+                           LEFT JOIN ht_member m ON ed.member_id = m.id
+                           WHERE ed.extra_id = " . $extraId . " ";
+            $commandStudent = $con_user->createCommand($sqlStudent)->queryAll();
+            $data['extraStudent'] = $commandStudent;
 
         } catch (Exception $e) {
             error_log($e);

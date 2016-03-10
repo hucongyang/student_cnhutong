@@ -44,7 +44,7 @@ return array(
             'connectionString' => 'mysql:host=127.0.0.1;dbname=cnhutong',
             'emulatePrepare' => true,
             'username' => 'root',
-            'password' => '111111',
+            'password' => 'root',
             'charset' => 'utf8',
             'class' =>  'CDbConnection',
             //'tablePrefix' => 'tbl_',
@@ -84,5 +84,5 @@ return array(
 
 	// application-level parameters that can be accessed
 	// using Yii::app()->params['paramName']
-	'params'=>require(dirname(__FILE__).'/params.php'),
+	'params'=>array_merge(require(dirname(__FILE__).'/params.php'), require(dirname(__FILE__).'/com_params.php')),
 );

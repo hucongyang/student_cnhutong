@@ -404,4 +404,179 @@ class UserController extends ApiPublicController
             $this->_return('MSG_ERR_TOKEN');
         }
     }
+
+    /**
+     *  教师获得补课学员信息
+     */
+    public function actionMyExtraLessonStudentList()
+    {
+        if (!isset($_REQUEST['teacherId']) || !isset($_REQUEST['token'])
+            || !isset($_REQUEST['page']) || !isset($_REQUEST['courseId'])) {
+            $this->_return('MSG_ERR_LESS_PARAM');
+        }
+
+        $user_id = trim(Yii::app()->request->getParam('teacherId', null));
+        $token = trim(Yii::app()->request->getParam('token', null));
+        $page = trim(Yii::app()->request->getParam('page', null));
+        $courseId = trim(Yii::app()->request->getParam('courseId', null));
+
+        if (!ctype_digit($user_id)) {
+            $this->_return('MSG_ERR_FAIL_PARAM');
+        }
+
+        // 用户名不存在,返回错误
+        if ($user_id < 1) {
+            $this->_return('MSG_ERR_NO_USER');
+        }
+
+        if (!ctype_digit($page) || $page < 0) {
+            $this->_return('MSG_ERR_FAIL_PAGE');
+        }
+
+        if (!ctype_digit($courseId) || $courseId < 1) {
+            $this->_return('MSG_ERR_FAIL_COURSE');
+        }
+
+        // 验证token
+        if (Token::model()->verifyToken($user_id, $token)) {
+
+            $data = User::model()->myExtraLessonStudentList($user_id, $page, $courseId);
+            $this->_return('MSG_SUCCESS', $data);
+        } else {
+            $this->_return('MSG_ERR_TOKEN');
+        }
+    }
+
+    /**
+     *  教师提交补课信息
+     */
+    public function actionPostExtraLesson()
+    {
+        if (!isset($_REQUEST['teacherId']) || !isset($_REQUEST['token'])
+            || !isset($_REQUEST['departmentId']) || !isset($_REQUEST['courseId'])
+            || !isset($_REQUEST['classroomId']) || !isset($_REQUEST['extraTime'])
+            || !isset($_REQUEST['extraDetail']) || !isset($_REQUEST['extraReason']) ) {
+            $this->_return('MSG_ERR_LESS_PARAM');
+        }
+
+        $user_id = trim(Yii::app()->request->getParam('teacherId', null));
+        $token = trim(Yii::app()->request->getParam('token', null));
+        $departmentId = trim(Yii::app()->request->getParam('departmentId', null));
+        $courseId = trim(Yii::app()->request->getParam('courseId', null));
+        $classroomId = trim(Yii::app()->request->getParam('classroomId', null));
+        $extraReason = trim(Yii::app()->request->getParam('extraReason', null));
+        $extraTime = trim(Yii::app()->request->getParam('extraTime', null));
+        $extraDetail = trim(Yii::app()->request->getParam('extraDetail', null));
+
+        if (!ctype_digit($user_id)) {
+            $this->_return('MSG_ERR_FAIL_PARAM');
+        }
+
+        // 用户名不存在,返回错误
+        if ($user_id < 1) {
+            $this->_return('MSG_ERR_NO_USER');
+        }
+
+        if (!ctype_digit($departmentId) || $departmentId < 1) {
+            $this->_return('MSG_ERR_FAIL_DEPARTMENT');
+        }
+
+        if (!ctype_digit($courseId) || $courseId < 1) {
+            $this->_return('MSG_ERR_FAIL_COURSE');
+        }
+
+        if (!ctype_digit($classroomId) || $classroomId < 1) {
+            $this->_return('MSG_ERR_FAIL_CLASSROOM');
+        }
+
+        // 验证日期格式合法
+        if (!$this->isDate($extraTime)) {
+            $this->_return('MSG_ERR_FAIL_DATE_FORMAT');
+        }
+
+        $studentJson = json_decode($extraDetail, true);
+        if (empty($extraDetail) || !$studentJson ) {
+            $this->_return('MSG_ERR_FAIL_EXTRASTUDENT');
+        }
+
+        // 验证token
+        if (Token::model()->verifyToken($user_id, $token)) {
+
+            $data = User::model()->postExtraLesson($user_id, $departmentId, $courseId, $classroomId, $extraTime, $studentJson, $extraReason);
+            $this->_return('MSG_SUCCESS', $data);
+        } else {
+            $this->_return('MSG_ERR_TOKEN');
+        }
+    }
+
+    /**
+     *  教师查看补课列表
+     */
+    public function actionMyExtraLessonList()
+    {
+        if (!isset($_REQUEST['teacherId']) || !isset($_REQUEST['token'])
+            || !isset($_REQUEST['page']) || !isset($_REQUEST['status']) ) {
+            $this->_return('MSG_ERR_LESS_PARAM');
+        }
+
+        $user_id = trim(Yii::app()->request->getParam('teacherId'));
+        $token = trim(Yii::app()->request->getParam('token'));
+        $page = trim(Yii::app()->request->getParam('page'));
+        $status = trim(Yii::app()->request->getParam('status'));
+
+        // 用户名不存在,返回错误
+        if (!ctype_digit($user_id) || $user_id < 1) {
+            $this->_return('MSG_ERR_NO_USER');
+        }
+
+        if (!ctype_digit($page) || $page < 0) {
+            $this->_return('MSG_ERR_FAIL_PAGE');
+        }
+
+        if (!ctype_digit($status) || $status < 0) {
+            $this->_return('MSG_ERR_FAIL_PARAM');
+        }
+
+        // 验证token
+        if (Token::model()->verifyToken($user_id, $token)) {
+
+            $data = User::model()->myExtraLessonList($user_id, $page, $status);
+            $this->_return('MSG_SUCCESS', $data);
+        } else {
+            $this->_return('MSG_ERR_TOKEN');
+        }
+    }
+
+    /**
+     *  教师查看补课详情
+     */
+    public function actionMyExtraLessonDetail()
+    {
+        if (!isset($_REQUEST['teacherId']) || !isset($_REQUEST['token'])
+            || !isset($_REQUEST['extraId']) ) {
+            $this->_return('MSG_ERR_LESS_PARAM');
+        }
+
+        $user_id = trim(Yii::app()->request->getParam('teacherId'));
+        $token = trim(Yii::app()->request->getParam('token'));
+        $extraId = trim(Yii::app()->request->getParam('extraId'));
+
+        // 用户名不存在,返回错误
+        if (!ctype_digit($user_id) || $user_id < 1) {
+            $this->_return('MSG_ERR_NO_USER');
+        }
+
+        if (!ctype_digit($extraId) || $extraId < 1) {
+            $this->_return('MSG_ERR_FAIL_PARAM');
+        }
+
+        // 验证token
+        if (Token::model()->verifyToken($user_id, $token)) {
+
+            $data = User::model()->myExtraLessonDetail($extraId);
+            $this->_return('MSG_SUCCESS', $data);
+        } else {
+            $this->_return('MSG_ERR_TOKEN');
+        }
+    }
 }

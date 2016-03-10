@@ -33,6 +33,9 @@ $_error_code = array(
 		'MSG_ERR_FAIL_PAGE'					=> array('20017', '分页参数错误'),
 		'MSG_NO_STUDENT'					=> array('20018', '此学员不存在'),
 		'MSG_OVER_TIME'						=> array('20019', '不可签到,存在签到课时不在签到时间范围内'),
+		'MSG_ERR_FAIL_COURSE'				=> array('20020', '科目参数错误'),
+		'MSG_ERR_FAIL_CLASSROOM'			=> array('20021', '教室参数错误'),
+		'MSG_ERR_FAIL_EXTRASTUDENT'			=> array('20022', '补课学员详情参数错误'),
 
 
 	// 其它
