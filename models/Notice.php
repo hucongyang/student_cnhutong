@@ -60,11 +60,12 @@ class Notice extends CActiveRecord
 
     /**
      * 获取消息信息
+     * @param $user_id
      * @param $page
      * @param $type
      * @return array|bool
      */
-    public function getNotices($page, $type)
+    public function getNotices($user_id, $page, $type)
     {
         $data = array();
         try {
@@ -75,7 +76,7 @@ class Notice extends CActiveRecord
             $con_user = Yii::app()->cnhutong;
             $sql = "SELECT id, title, create_time as time, flag, status
                     FROM " . self::tableName() . "
-                    WHERE type = " . $type . "
+                    WHERE accept_id = " . $user_id ." and type = " . $type . "
                     " . $pageLimit ."
                     ";
             $result = $con_user->createCommand($sql)->queryAll();
