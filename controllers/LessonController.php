@@ -130,4 +130,67 @@ class LessonController extends ApiPublicController
         }
 
     }
+
+    /**
+     *  用户提交课时请假信息
+     */
+    public function actionLessonStudentLeave()
+    {
+        if (!isset($_REQUEST['userId']) || !isset($_REQUEST['token'])
+            || !isset($_REQUEST['lessonStudentId']) || !isset($_REQUEST['memberId'])
+            || !isset($_REQUEST['dateTime']) || !isset($_REQUEST['reason'])
+            || !isset($_REQUEST['courseId']) ) {
+            $this->_return('MSG_ERR_LESS_PARAM');
+        }
+
+        $user_id = trim(Yii::app()->request->getParam('userId'));
+        $token = trim(Yii::app()->request->getParam('token'));
+        $lessonStudentId = trim(Yii::app()->request->getParam('lessonStudentId'));
+        $memberId = trim(Yii::app()->request->getParam('memberId'));
+        $dateTime = trim(Yii::app()->request->getParam('dateTime', null));
+        $reason = trim(Yii::app()->request->getParam('reason', null));
+        $courseId = trim(Yii::app()->request->getParam('courseId', null));
+
+        // 用户名不存在,返回错误
+        if (!ctype_digit($user_id) || $user_id < 1) {
+            $this->_return('MSG_ERR_NO_USER');
+        }
+
+        if (empty($lessonStudentId) || $lessonStudentId < 1) {
+            $this->_return('MSG_ERR_FAIL_LESSON_STUDENT_ID');
+        }
+
+        if (!ctype_digit($memberId) || $memberId < 1) {
+            $this->_return('MSG_NO_MEMBER');
+        }
+
+        if (!ctype_digit($courseId) || $courseId < 1) {
+            $this->_return('MSG_NO_MEMBER');
+        }
+
+        // 验证日期格式合法
+        if (!$this->isDate($dateTime)) {
+            $this->_return('MSG_ERR_FAIL_DATE_FORMAT');
+        }
+
+        // 验证token
+        if (Token::model()->verifyToken($user_id, $token)) {
+
+            // 提交课时请假信息
+            $data = Lesson::model()->lessonStudentLeave($memberId, $courseId, $lessonStudentId, $dateTime, $reason);
+
+            // 增加用户操作log
+            $action_id = 2202;
+            $params = '';
+            foreach ($_REQUEST as $key => $value)  {
+                $params .= $key . '=' . $value . '&';
+            }
+            $params = substr($params, 0, -1);
+            Log::model()->action_log($user_id, $action_id, $params);
+
+            $this->_return('MSG_SUCCESS', $data);
+        } else {
+            $this->_return('MSG_ERR_TOKEN');
+        }
+    }
 }

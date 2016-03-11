@@ -128,4 +128,52 @@ class Lesson extends CActiveRecord
         }
         return $data;
     }
+
+    /**
+     * 提交课时请假信息
+     * @param $memberId
+     * @param $courseId
+     * @param $lessonStudentId
+     * @param $dateTime
+     * @param $reason
+     * @return bool
+     */
+    public function lessonStudentLeave($memberId, $courseId, $lessonStudentId, $dateTime, $reason)
+    {
+        $nowTime = date('Y-m-d H:i:s');
+        try {
+            $con_user = Yii::app()->cnhutong;
+            $table_name = 'com_leave';
+            // 请假表记录请假详情
+            $data = $con_user->createCommand()->insert($table_name,
+                array(
+                    'member_id'             => $memberId,
+                    'course_id'             => $courseId,
+                    'lesson_student_id'     => $lessonStudentId,
+                    'leave_time'            => $dateTime,
+                    'create_time'           => $nowTime,
+                    'update_time'           => $nowTime,
+                    'flag'                  => 2,
+                    'status'                => 1,
+                    'reason'                => $reason
+                )
+            );
+
+            // 学员请假直接修改课表课时状态
+            $dataLeave = $con_user->createCommand()->update('ht_lesson_student',
+                array(
+                    'step' => 6,
+                ),
+                'id = :lessonStudentId',
+                array(
+                    ':lessonStudentId' => $lessonStudentId
+                )
+            );
+
+        } catch (Exception $e) {
+            error_log($e);
+            return false;
+        }
+        return $data;
+    }
 }
