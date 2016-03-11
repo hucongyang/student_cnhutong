@@ -38,6 +38,10 @@ $_error_code = array(
 		'MSG_ERR_FAIL_LESSON_STUDENT_ID'	=> array('20021', '课时编号错误'),
 		'MSG_NO_LESSON_STUDENT_ID'			=> array('20022', '不存在的课时编号'),
 		'MSG_ERR_FAIL_PLATFORM|APP_ID'		=> array('20023', '平台|应用编号错误'),
+		'MSG_ERR_FAIL_PAGE'					=> array('20024', '分页参数错误'),
+		'MSG_ERR_FAIL_TYPE'					=> array('20025', '类型参数错误'),
+		'MSG_ERR_FAIL_NOTICE'				=> array('20026', '消息参数错误'),
+		'MSG_ERR_FAIL_NOTICE_STATUS'		=> array('20027', '消息状态参数错误'),
 
 
 	// 其它

@@ -170,6 +170,9 @@ class Lesson extends CActiveRecord
                 )
             );
 
+            // 写通知
+            Notice::model()->insertNotice($memberId, 8, 1, 7, null, 2, '学生请假', '你是谁', time(), 1, 0);
+
         } catch (Exception $e) {
             error_log($e);
             return false;
