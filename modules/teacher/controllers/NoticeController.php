@@ -10,12 +10,12 @@ class NoticeController extends ApiPublicController
      */
     public function actionGetNotices()
     {
-        if (!isset($_REQUEST['userId']) || !isset($_REQUEST['token'])
+        if (!isset($_REQUEST['teacherId']) || !isset($_REQUEST['token'])
             || !isset($_REQUEST['page']) || !isset($_REQUEST['type']) ) {
             $this->_return('MSG_ERR_LESS_PARAM');
         }
 
-        $user_id = trim(Yii::app()->request->getParam('userId'));
+        $user_id = trim(Yii::app()->request->getParam('teacherId'));
         $token = trim(Yii::app()->request->getParam('token'));
         $page = trim(Yii::app()->request->getParam('page'));
         $type = trim(Yii::app()->request->getParam('type'));
@@ -48,12 +48,12 @@ class NoticeController extends ApiPublicController
      */
     public function actionGetNoticeDetail()
     {
-        if (!isset($_REQUEST['userId']) || !isset($_REQUEST['token'])
+        if (!isset($_REQUEST['teacherId']) || !isset($_REQUEST['token'])
             || !isset($_REQUEST['noticeId']) ) {
             $this->_return('MSG_ERR_LESS_PARAM');
         }
 
-        $user_id = trim(Yii::app()->request->getParam('userId'));
+        $user_id = trim(Yii::app()->request->getParam('teacherId'));
         $token = trim(Yii::app()->request->getParam('token'));
         $noticeId = trim(Yii::app()->request->getParam('noticeId'));
 
@@ -81,12 +81,12 @@ class NoticeController extends ApiPublicController
      */
     public function actionPostNoticeReturn()
     {
-        if (!isset($_REQUEST['userId']) || !isset($_REQUEST['token'])
+        if (!isset($_REQUEST['teacherId']) || !isset($_REQUEST['token'])
             || !isset($_REQUEST['noticeId']) || !isset($_REQUEST['status']) ) {
             $this->_return('MSG_ERR_LESS_PARAM');
         }
 
-        $user_id = trim(Yii::app()->request->getParam('userId'));
+        $user_id = trim(Yii::app()->request->getParam('teacherId'));
         $token = trim(Yii::app()->request->getParam('token'));
         $noticeId = trim(Yii::app()->request->getParam('noticeId'));
         $status = trim(Yii::app()->request->getParam('status'));

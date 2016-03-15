@@ -140,4 +140,32 @@ class Notice extends CActiveRecord
         }
         return $data;
     }
+
+    /**
+     * 校验消息ID和用户Id是否存在联系
+     * @param $noticeId
+     * @param $user_id
+     * @return bool
+     */
+    public function isExistNoticeId($noticeId, $user_id)
+    {
+        try {
+            $con_user = Yii::app()->cnhutong;
+            $result = $con_user->createCommand()
+                ->select('id')
+                ->from('com_notice')
+                ->where('accept_id = :acceptId and id = :noticeId',
+                    array(
+                        ':acceptId' => $user_id,
+                        ':noticeId' => $noticeId
+                    )
+                )
+                ->limit('1')
+                ->queryScalar();
+        } catch (Exception $e) {
+            error_log($e);
+            return false;
+        }
+        return $result;
+    }
 }

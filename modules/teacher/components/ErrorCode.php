@@ -36,6 +36,10 @@ $_error_code = array(
 		'MSG_ERR_FAIL_COURSE'				=> array('20020', '科目参数错误'),
 		'MSG_ERR_FAIL_CLASSROOM'			=> array('20021', '教室参数错误'),
 		'MSG_ERR_FAIL_EXTRASTUDENT'			=> array('20022', '补课学员详情参数错误'),
+		'MSG_ERR_FAIL_TYPE'					=> array('20023', '类型参数错误'),
+		'MSG_ERR_FAIL_NOTICE'				=> array('20024', '消息参数错误'),
+		'MSG_ERR_FAIL_NOTICE_STATUS'		=> array('20025', '消息状态参数错误'),
+
 
 
 	// 其它
