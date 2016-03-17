@@ -555,7 +555,7 @@ class User extends CActiveRecord
             $pageLimit = " limit $page, 10";
 
             $con_user = Yii::app()->cnhutong;
-            $sql = "SELECT cd.student_id, m.name, c.end_date
+            $sql = "SELECT cd.student_id AS studentId, m.name AS studentName
                     FROM ht_contract_detail AS cd
                     LEFT JOIN ht_contract AS c ON cd.contract_id = c.id
                     LEFT JOIN ht_member AS m ON cd.student_id = m.id
@@ -670,7 +670,6 @@ class User extends CActiveRecord
 
         } catch (Exception $e) {
             error_log($e);
-            var_dump($e);
             return false;
         }
         return $data;
