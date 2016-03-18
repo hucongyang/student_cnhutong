@@ -36,4 +36,96 @@ class Common extends CActiveRecord
         }
         return $result;
     }
+
+    /**
+     * 根据学员id获得学员名称
+     * @param $id
+     * @return bool
+     */
+    public function getNameById($id)
+    {
+        try {
+            $con_user = Yii::app()->cnhutong;
+            $name = $con_user->createCommand()
+                ->select('name')
+                ->from('ht_member')
+                ->where('id = :studentId', array(':studentId' => $id))
+                ->limit('1')
+                ->queryScalar();
+
+        } catch (Exception $e) {
+            error_log($e);
+            return false;
+        }
+        return $name;
+    }
+
+    /**
+     * 根据课程id获得课程名称
+     * @param $id
+     * @return bool
+     */
+    public function getCourseById($id)
+    {
+        try {
+            $con_user = Yii::app()->cnhutong;
+            $course = $con_user->createCommand()
+                ->select('course')
+                ->from('ht_course')
+                ->where('id = :id', array(':id' => $id))
+                ->limit('1')
+                ->queryScalar();
+
+        } catch (Exception $e) {
+            error_log($e);
+            return false;
+        }
+        return $course;
+    }
+
+    /**
+     * 根据校区id获得校区名称
+     * @param $id
+     * @return bool
+     */
+    public function getDepartmentById($id)
+    {
+        try {
+            $con_user = Yii::app()->cnhutong;
+            $department = $con_user->createCommand()
+                ->select('name')
+                ->from('ht_department')
+                ->where('id = :id', array(':id' => $id))
+                ->limit('1')
+                ->queryScalar();
+
+        } catch (Exception $e) {
+            error_log($e);
+            return false;
+        }
+        return $department;
+    }
+
+    /**
+     * 根据教室id获得教室名称
+     * @param $id
+     * @return bool
+     */
+    public function getClassroomById($id)
+    {
+        try {
+            $con_user = Yii::app()->cnhutong;
+            $classroom = $con_user->createCommand()
+                ->select('name')
+                ->from('ht_classroom')
+                ->where('id = :id', array(':id' => $id))
+                ->limit('1')
+                ->queryScalar();
+
+        } catch (Exception $e) {
+            error_log($e);
+            return false;
+        }
+        return $classroom;
+    }
 }

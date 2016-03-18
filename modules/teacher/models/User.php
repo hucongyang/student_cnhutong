@@ -303,6 +303,8 @@ class User extends CActiveRecord
             $sumNum["delayedLessonCnt"] = 0;
             $sumNum["lesson_fee"] = 0;
             $sumNum["lesson_cnt_charged"] = 0;
+            $sumNum["overDelayedLessonCnt"] = 0;
+            $sumNum["overDelayedLessonFee"] = 0;
 
             foreach($query as $key=>$lesson){
 
@@ -623,8 +625,39 @@ class User extends CActiveRecord
                         'update_user_id'    => 0,
                     )
                 );
+
+                if (Common::model()->getNameById($row['studentId'])) {
+                    $studentNameArr[] = Common::model()->getNameById($row['studentId']);
+                }
             }
 
+            // 推送相关补课消息给相应老师
+            // 申请人名称
+            $userName = Common::model()->getNameById($user_id);
+            // 学员名称
+            $studentNames = implode(' ', $studentNameArr);
+            // 加课时间 $extraTime
+
+            // 课程
+            $courseName = Common::model()->getCourseById($courseId);
+
+            // 校区
+            $departmentName = Common::model()->getDepartmentById($departmentId);
+
+            // 老师
+            $teacherName = Common::model()->getNameById($user_id);
+
+            // 教室
+            $classroomName = Common::model()->getClassroomById($classroomId);
+
+            // 理由 备注 $extraReason
+
+            $msg_content = " 申请人: $userName; 学员: $studentNames; 时间: $extraTime; 课程: $courseName; 老师: $teacherName; 教室: $departmentName/$classroomName; 备注: $extraReason ";
+            $msg_title = '老师补课申请';
+            Push::model()->pushMsg(11, $user_id, $msg_content, $msg_title);
+
+            // 添加老师补课消息
+            Notice::model()->insertNotice($user_id, $user_id, 1, null, $extraId, 3, $msg_title, $msg_content, $nowTime, 1, 0);
 
         } catch (Exception $e) {
             error_log($e);
