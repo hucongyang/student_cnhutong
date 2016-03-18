@@ -44,39 +44,6 @@ class NoticeController extends ApiPublicController
     }
 
     /**
-     *  获取信息详情
-     */
-    public function actionGetNoticeDetail()
-    {
-        if (!isset($_REQUEST['teacherId']) || !isset($_REQUEST['token'])
-            || !isset($_REQUEST['noticeId']) ) {
-            $this->_return('MSG_ERR_LESS_PARAM');
-        }
-
-        $user_id = trim(Yii::app()->request->getParam('teacherId'));
-        $token = trim(Yii::app()->request->getParam('token'));
-        $noticeId = trim(Yii::app()->request->getParam('noticeId'));
-
-        if (!ctype_digit($user_id) || $user_id < 1) {
-            $this->_return('MSG_ERR_NO_USER');
-        }
-
-        if (!ctype_digit($noticeId) || ($noticeId < 1) || !(Notice::model()->isExistNoticeId($noticeId, $user_id)) ) {
-            $this->_return('MSG_ERR_FAIL_NOTICE');
-        }
-
-        // 验证token
-        if (Token::model()->verifyToken($user_id, $token)) {
-
-            $data = Notice::model()->getNoticeDetail($noticeId);
-            $this->_return('MSG_SUCCESS', $data);
-        } else {
-            $this->_return('MSG_ERR_TOKEN');
-        }
-
-    }
-
-    /**
      *  提交消息信息
      */
     public function actionPostNoticeReturn()

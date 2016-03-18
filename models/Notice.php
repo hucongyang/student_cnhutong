@@ -74,9 +74,10 @@ class Notice extends CActiveRecord
             $pageLimit = " limit $page, 5";
 
             $con_user = Yii::app()->cnhutong;
-            $sql = "SELECT id, title, create_time as time, flag, status
+            $sql = "SELECT id, title, content, create_time as time, flag, status
                     FROM " . self::tableName() . "
                     WHERE accept_id = " . $user_id ." and type = " . $type . "
+                    ORDER BY create_time desc
                     " . $pageLimit ."
                     ";
             $result = $con_user->createCommand($sql)->queryAll();
@@ -88,30 +89,6 @@ class Notice extends CActiveRecord
         }
         return $data;
     }
-
-    /**
-     * 获取信息详情
-     * @param $noticeId
-     * @return array|bool
-     */
-    public function getNoticeDetail($noticeId)
-    {
-        $data = array();
-        try {
-            $con_user = Yii::app()->cnhutong;
-            $sql = "SELECT id, title, content, create_time as time, flag, status
-                    FROM " . self::tableName() . "
-                    WHERE id = " . $noticeId . " ";
-            $result = $con_user->createCommand($sql)->queryAll();
-            $data['noticeDetail'] = $result;
-
-        } catch (Exception $e) {
-            error_log($e);
-            return false;
-        }
-        return $data;
-    }
-
 
     /**
      * 提交消息信息
