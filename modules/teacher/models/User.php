@@ -612,6 +612,7 @@ class User extends CActiveRecord
             $extraId = Yii::app()->cnhutong->getLastInsertID();
 
 
+            $studentNameArr = array();
             // 补课详情表添加数据
             foreach ($studentJson as $row) {
                 $result2 = $con_user->createCommand()->insert('com_extra_detail',
@@ -653,8 +654,8 @@ class User extends CActiveRecord
             // 理由 备注 $extraReason
 
             $msg_content = " 申请人: $userName; 学员: $studentNames; 时间: $extraTime; 课程: $courseName; 老师: $teacherName; 教室: $departmentName/$classroomName; 备注: $extraReason ";
-            $msg_title = '老师补课申请';
-            Push::model()->pushMsg(11, $user_id, $msg_content, $msg_title);
+            $msg_title = '老师补课申请type=3';
+            Push::model()->pushMsg(11, $user_id, 'type = 3', $msg_title);
 
             // 添加老师补课消息
             Notice::model()->insertNotice($user_id, $user_id, 1, null, $extraId, 3, $msg_title, $msg_content, $nowTime, 1, 0);
