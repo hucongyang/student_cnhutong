@@ -128,4 +128,33 @@ class Common extends CActiveRecord
         }
         return $classroom;
     }
+
+    /**
+     * 根据课时id获得该课时相关详细信息
+     * @param $lessonStudentId
+     * @return array|bool
+     */
+    public function getLessonDetailById($lessonStudentId)
+    {
+        try {
+            $con_user = Yii::app()->cnhutong;
+            $detail = $con_user->createCommand()
+                ->select('m.name as studentName, ls.date, ls.time, c.course, ls.lesson_cnt_charged,
+                d.department, class.name as classroom')
+                ->from('ht_lesson_student ls')
+                ->leftJoin('ht_member m', 'ls.student_id = m.id')
+                ->leftJoin('ht_course c', 'ls.course_id = c.id')
+                ->leftJoin('ht_department d', 'ls.department_id = d.id')
+                ->leftJoin('ht_classroom class', 'ls.classroom_id = class.id')
+                ->where('ls.id = :id', array(':id' => $lessonStudentId))
+                ->limit('1')
+                ->queryRow();
+
+        } catch (Exception $e) {
+            error_log($e);
+            var_dump($e);
+            return false;
+        }
+        return $detail;
+    }
 }

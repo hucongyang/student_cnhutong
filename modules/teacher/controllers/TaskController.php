@@ -111,14 +111,14 @@ class TaskController extends ApiPublicController
         }
 
         // 解析json，获得课时id: $lessonStudentId 和课时step: $step
-        if (!Task::model()->verifyPost($lessonJson)) {
-            $this->_return('MSG_OVER_TIME');
-        }
+//        if (!Task::model()->verifyPost($lessonJson)) {
+//            $this->_return('MSG_OVER_TIME');
+//        }
 
         // 验证token
         if (Token::model()->verifyToken($user_id, $token)) {
             // 提交任务签到
-            $data = Task::model()->postSign($lessonJson);
+            $data = Task::model()->postSign($user_id, $lessonJson);
             if ($data > 0) {
                 $this->_return('MSG_SUCCESS');
             } else {
