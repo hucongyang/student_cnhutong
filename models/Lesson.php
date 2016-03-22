@@ -159,6 +159,8 @@ class Lesson extends CActiveRecord
                 )
             );
 
+            $leaveId = Yii::app()->cnhutong->getLastInsertID();
+
             // 学员请假直接修改课表课时状态
             $dataLeave = $con_user->createCommand()->update('ht_lesson_student',
                 array(
@@ -170,13 +172,46 @@ class Lesson extends CActiveRecord
                 )
             );
 
-            // 写通知
-            Notice::model()->insertNotice($memberId, 8, 1, 7, null, 2, '学生请假', '你是谁', time(), 1, 0);
+            // 根据课时id获得学员id (ht_lesson_student),再根据学员id获得绑定的user_id（com_user_member）
+
+            $lessonDetail           = Common::model()->getLessonDetailById($lessonStudentId);
+            // 推送相关请假消息给相应老师
+
+            // 学员名称
+            $studentName            = $lessonDetail['studentName'];
+
+            // 时间
+            $dateTime               = $lessonDetail['date'] . ' ' . $lessonDetail['time'];
+
+            // 课程
+            $courseName             = $lessonDetail['course'];
+
+            // 课时
+            $lesson_cnt_charged     = $lessonDetail['lesson_cnt_charged'];
+
+            // 校区
+            $departmentName         = $lessonDetail['department'];
+
+            // 老师
+            $teacherId              = $lessonDetail['teacherId'];
+
+            // 教室
+            $classroomName          = $lessonDetail['classroom'];
+
+            // 理由 备注 $extraReason
+
+            $msg_content = " 学员: $studentName; 时间: $dateTime; 课程: $courseName; 课时: $lesson_cnt_charged; 教室: $departmentName/$classroomName ";
+            $msg_title = '学员请假通知';
+            Push::model()->pushMsg(11, $teacherId, 'type = 2', $msg_title);
+
+            // 添加学员请假消息
+            Notice::model()->insertNotice($memberId, $teacherId, 2, $leaveId, null, 2, $msg_title, $msg_content, $nowTime, 1, 0);
+
 
         } catch (Exception $e) {
             error_log($e);
             return false;
         }
-        return $data;
+
     }
 }

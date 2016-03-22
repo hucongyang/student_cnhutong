@@ -90,9 +90,9 @@ class LessonController extends ApiPublicController
             $this->_return('MSG_ERR_LESS_PARAM');
         }
 
-        $user_id = trim(Yii::app()->request->getParam('userId'));
-        $token = trim(Yii::app()->request->getParam('token'));
-        $lessonStudentId = trim(Yii::app()->request->getParam('lessonStudentId'));
+        $user_id = trim(Yii::app()->request->getParam('userId', null));
+        $token = trim(Yii::app()->request->getParam('token', null));
+        $lessonStudentId = trim(Yii::app()->request->getParam('lessonStudentId', null));
 
         if (!ctype_digit($user_id)) {
             $this->_return('MSG_ERR_FAIL_PARAM');
@@ -143,10 +143,10 @@ class LessonController extends ApiPublicController
             $this->_return('MSG_ERR_LESS_PARAM');
         }
 
-        $user_id = trim(Yii::app()->request->getParam('userId'));
-        $token = trim(Yii::app()->request->getParam('token'));
-        $lessonStudentId = trim(Yii::app()->request->getParam('lessonStudentId'));
-        $memberId = trim(Yii::app()->request->getParam('memberId'));
+        $user_id = trim(Yii::app()->request->getParam('userId', null));
+        $token = trim(Yii::app()->request->getParam('token', null));
+        $lessonStudentId = trim(Yii::app()->request->getParam('lessonStudentId', null));
+        $memberId = trim(Yii::app()->request->getParam('memberId', null));
         $dateTime = trim(Yii::app()->request->getParam('dateTime', null));
         $reason = trim(Yii::app()->request->getParam('reason', null));
         $courseId = trim(Yii::app()->request->getParam('courseId', null));
@@ -177,7 +177,7 @@ class LessonController extends ApiPublicController
         if (Token::model()->verifyToken($user_id, $token)) {
 
             // 提交课时请假信息
-            $data = Lesson::model()->lessonStudentLeave($memberId, $courseId, $lessonStudentId, $dateTime, $reason);
+            Lesson::model()->lessonStudentLeave($memberId, $courseId, $lessonStudentId, $dateTime, $reason);
 
             // 增加用户操作log
             $action_id = 2202;
@@ -188,7 +188,7 @@ class LessonController extends ApiPublicController
             $params = substr($params, 0, -1);
             Log::model()->action_log($user_id, $action_id, $params);
 
-            $this->_return('MSG_SUCCESS', $data);
+            $this->_return('MSG_SUCCESS');
         } else {
             $this->_return('MSG_ERR_TOKEN');
         }
