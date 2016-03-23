@@ -214,4 +214,26 @@ class Lesson extends CActiveRecord
         }
 
     }
+
+
+    /**
+     * 根据课时id判断该课时是否已请过假
+     * @param $lessonStudentId
+     * @return bool
+     */
+    public function isExistLessonStudentId($lessonStudentId)
+    {
+        try {
+            $con_user = Yii::app()->cnhutong;
+            $result = $con_user->createCommand()
+                ->select('id')
+                ->from('com_leave')
+                ->where('lesson_student_id = :lessonStudentId', array(':lessonStudentId' => $lessonStudentId))
+                ->queryScalar();
+        } catch (Exception $e) {
+            error_log($e);
+            return false;
+        }
+        return $result;
+    }
 }

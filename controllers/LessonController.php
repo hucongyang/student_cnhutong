@@ -160,6 +160,10 @@ class LessonController extends ApiPublicController
             $this->_return('MSG_ERR_FAIL_LESSON_STUDENT_ID');
         }
 
+        if (Lesson::model()->isExistLessonStudentId($lessonStudentId)) {
+            $this->_return('MSG_EXIST_LESSON_STUDENT_ID');
+        }
+
         if (!ctype_digit($memberId) || $memberId < 1) {
             $this->_return('MSG_NO_MEMBER');
         }
