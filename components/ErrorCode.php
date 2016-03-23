@@ -44,6 +44,7 @@ $_error_code = array(
 		'MSG_ERR_FAIL_NOTICE_STATUS'		=> array('20027', '消息状态参数错误'),
 		'MSG_ERR_FAIL_DEPARTMENT'			=> array('20028', '校区参数错误'),
 		'MSG_EXIST_LESSON_STUDENT_ID'		=> array('20029', '该课时已请过假'),
+		'MSG_ERR_FAIL_STUDENT_GRADE'		=> array('20030', '课时评分错误'),
 
 
 	// 其它

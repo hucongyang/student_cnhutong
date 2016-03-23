@@ -236,4 +236,53 @@ class Lesson extends CActiveRecord
         }
         return $result;
     }
+
+    /**
+     * 课时id是否存在
+     * @param $lessonStudentId
+     * @return bool
+     */
+    public function isExistId($lessonStudentId)
+    {
+        try {
+            $con_user = Yii::app()->cnhutong;
+            $result = $con_user->createCommand()
+                ->select('id')
+                ->from('ht_lesson_student')
+                ->where('id = :id', array(':id' => $lessonStudentId))
+                ->queryScalar();
+        } catch (Exception $e) {
+            error_log($e);
+            return false;
+        }
+        return $result;
+    }
+
+    /**
+     * 用户提交课时评价
+     * @param $lessonStudentId
+     * @param $studentGrade
+     * @param $studentEval
+     * @return bool
+     */
+    public function postLessonEval($lessonStudentId, $studentGrade, $studentEval)
+    {
+        try {
+            $con_user = Yii::app()->cnhutong;
+            $result = $con_user->createCommand()->update('ht_lesson_student',
+                array(
+                    'student_rating'        => $studentGrade,
+                    'student_comment'       => $studentEval
+                ),
+                'id = :id',
+                array(
+                    ':id'                   => $lessonStudentId
+                )
+            );
+        } catch (Exception $e) {
+            error_log($e);
+            return false;
+        }
+        return $result;
+    }
 }

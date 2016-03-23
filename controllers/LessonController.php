@@ -197,4 +197,48 @@ class LessonController extends ApiPublicController
             $this->_return('MSG_ERR_TOKEN');
         }
     }
+
+    public function actionPostLessonEval()
+    {
+        if (!isset($_REQUEST['userId']) || !isset($_REQUEST['token'])
+            || !isset($_REQUEST['lessonStudentId']) || !isset($_REQUEST['studentGrade'])
+            || !isset($_REQUEST['studentEval']) ) {
+            $this->_return('MSG_ERR_LESS_PARAM');
+        }
+
+        $user_id = trim(Yii::app()->request->getParam('userId', null));
+        $token = trim(Yii::app()->request->getParam('token', null));
+        $lessonStudentId = trim(Yii::app()->request->getParam('lessonStudentId', null));
+        $studentGrade = trim(Yii::app()->request->getParam('studentGrade', null));
+        $studentEval = trim(Yii::app()->request->getParam('studentEval', null));
+
+        // 用户名不存在,返回错误
+        if (!ctype_digit($user_id) || $user_id < 1) {
+            $this->_return('MSG_ERR_NO_USER');
+        }
+
+        if (empty($lessonStudentId) || $lessonStudentId < 1) {
+            $this->_return('MSG_ERR_FAIL_LESSON_STUDENT_ID');
+        }
+
+        if (!Lesson::model()->isExistId($lessonStudentId)) {
+            $this->_return('MSG_NO_LESSON_STUDENT_ID');
+        }
+
+        if (!in_array($studentGrade, array(1, 2, 3, 4, 5))) {
+            $this->_return('MSG_ERR_FAIL_STUDENT_GRADE');
+        }
+
+        // 验证token
+        if (Token::model()->verifyToken($user_id, $token)) {
+
+            // 提交课时请假信息
+            Lesson::model()->postLessonEval($lessonStudentId, $studentGrade, $studentEval);
+
+            $this->_return('MSG_SUCCESS');
+        } else {
+            $this->_return('MSG_ERR_TOKEN');
+        }
+
+    }
 }
