@@ -221,4 +221,27 @@ class Common extends CActiveRecord
         return $data;
 
     }
+
+    /**
+     * 获取活动列表
+     * @return array|bool
+     */
+    public function getActivities()
+    {
+        $data = array();
+        try {
+            $con_user = Yii::app()->cnhutong;
+            $result = $con_user->createCommand()
+                ->select('id, title, img, url')
+                ->from('com_activity')
+                ->queryAll();
+
+            $data['activities'] = $result;
+
+        } catch (Exception $e) {
+            error_log($e);
+           return false;
+        }
+        return $data;
+    }
 }

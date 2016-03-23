@@ -108,4 +108,11 @@ class CommonController extends ApiPublicController
         $this->_return('MSG_SUCCESS', $data);
 
     }
+
+    public function actionGetActivities()
+    {
+        $data = Common::model()->getActivities();
+
+        $this->_return('MSG_SUCCESS', $data);
+    }
 }
