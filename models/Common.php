@@ -152,9 +152,73 @@ class Common extends CActiveRecord
 
         } catch (Exception $e) {
             error_log($e);
-            var_dump($e);
             return false;
         }
         return $detail;
+    }
+
+    /**
+     * 获取校区列表
+     * @param $type
+     * @return array|bool
+     */
+    public function getAllSchools($type)
+    {
+        if ($type == 1 ) {
+            $areaType = '';
+        } else {
+            $areaType = "area = $type";
+        }
+
+        $data = array();
+        try {
+
+            $result = Yii::app()->cnhutong->createCommand()
+                ->select('id as departmentId, area, name, telphone, address, picture as photo')
+                ->from('com_department')
+                ->where($areaType)
+                ->queryAll();
+
+            $data['schools'] = $result;
+
+        } catch (Exception $e) {
+            error_log($e);
+            return false;
+        }
+        return $data;
+
+    }
+
+    /**
+     * @param $departmentId
+     * @return array|bool
+     */
+    public function getSchoolInfo($departmentId)
+    {
+        $data = array();
+        try {
+
+            $result = Yii::app()->cnhutong->createCommand()
+                ->select('area, name, telphone, address, bus_line as busLine, parking, point_x, point_y')
+                ->from('com_department')
+                ->where('id = :id', array(':id' => $departmentId))
+                ->queryAll();
+
+            $data['schoolInfo'] = $result;
+
+            $resultPic = Yii::app()->cnhutong->createCommand()
+                ->select('picture, desc')
+                ->from('com_department_picture')
+                ->where('department_id = :id', array(':id' => $departmentId))
+                ->queryAll();
+
+            $data['pictures'] = $resultPic;
+
+        } catch (Exception $e) {
+            error_log($e);
+            return false;
+        }
+        return $data;
+
     }
 }

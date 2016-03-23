@@ -52,4 +52,60 @@ class CommonController extends ApiPublicController
             $this->_return('MSG_ERR_FAIL_PLATFORM|APP_ID');
         }
     }
+
+    /**
+     *  获取校区列表
+     */
+    public function actionGetAllSchools()
+    {
+        if (!isset($_REQUEST['userId']) || !isset($_REQUEST['type'])
+            || empty($_REQUEST['userId']) || empty($_REQUEST['type'])) {
+            $this->_return('MSG_ERR_LESS_PARAM');
+        }
+
+        $user_id = trim(Yii::app()->request->getParam('userId', null));
+        $type = trim(Yii::app()->request->getParam('type', null));
+
+        if (!ctype_digit($user_id) || $user_id < 1) {
+            $this->_return('MSG_ERR_NO_USER');
+        }
+
+        $typeArr = array(1, 2, 3, 4);
+
+        if (!ctype_digit($type) || !in_array($type, $typeArr)) {
+            $this->_return('MSG_ERR_FAIL_TYPE');
+        }
+
+        $data = Common::model()->getAllSchools($type);
+
+        $this->_return('MSG_SUCCESS', $data);
+
+    }
+
+    /**
+     *  获取校区详情
+     */
+    public function actionGetSchoolInfo()
+    {
+        if (!isset($_REQUEST['userId']) || !isset($_REQUEST['departmentId'])
+            || empty($_REQUEST['userId']) || empty($_REQUEST['departmentId'])) {
+            $this->_return('MSG_ERR_LESS_PARAM');
+        }
+
+        $user_id = trim(Yii::app()->request->getParam('userId', null));
+        $departmentId = trim(Yii::app()->request->getParam('departmentId', null));
+
+        if (!ctype_digit($user_id) || $user_id < 1) {
+            $this->_return('MSG_ERR_NO_USER');
+        }
+
+        if (!ctype_digit($departmentId) || $departmentId < 1) {
+            $this->_return('MSG_ERR_FAIL_DEPARTMENT');
+        }
+
+        $data = Common::model()->getSchoolInfo($departmentId);
+
+        $this->_return('MSG_SUCCESS', $data);
+
+    }
 }

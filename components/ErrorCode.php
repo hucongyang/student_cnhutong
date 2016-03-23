@@ -42,6 +42,7 @@ $_error_code = array(
 		'MSG_ERR_FAIL_TYPE'					=> array('20025', '类型参数错误'),
 		'MSG_ERR_FAIL_NOTICE'				=> array('20026', '消息参数错误'),
 		'MSG_ERR_FAIL_NOTICE_STATUS'		=> array('20027', '消息状态参数错误'),
+		'MSG_ERR_FAIL_DEPARTMENT'			=> array('20028', '校区参数错误'),
 
 
 	// 其它

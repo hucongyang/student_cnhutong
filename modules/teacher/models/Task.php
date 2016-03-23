@@ -272,7 +272,7 @@ class Task extends CActiveRecord
 
                         $msg_content = " 学员: $studentName; 时间: $dateTime; 课程: $courseName; 课时: $lesson_cnt_charged; 老师: $teacherName; 教室: $departmentName/$classroomName ";
                         $msg_title = '销课通知';
-                        Push::model()->pushMsg(11, $user_id, 'type = 3', $msg_title);
+                        Push::model()->pushMsg(10, $acceptId['user_id'], 'type = 3', $msg_title);
 
                         // 添加老师销课消息
                         Notice::model()->insertNotice($user_id, $acceptId['user_id'], 1, null, null, 3, $msg_title, $msg_content, $nowTime, 1, 0);
