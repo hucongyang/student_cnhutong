@@ -489,11 +489,6 @@ class UserController extends ApiPublicController
             $this->_return('MSG_ERR_FAIL_CLASSROOM');
         }
 
-        // 验证日期格式合法
-        if (!$this->isDate($extraTime)) {
-            $this->_return('MSG_ERR_FAIL_DATE_FORMAT');
-        }
-
         $studentJson = json_decode($extraDetail, true);
         if (empty($extraDetail) || !$studentJson ) {
             $this->_return('MSG_ERR_FAIL_EXTRASTUDENT');
