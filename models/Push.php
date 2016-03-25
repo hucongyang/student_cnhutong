@@ -36,7 +36,7 @@ class Push extends CActiveRecord
         $result = $client->push()
             ->setPlatform(array('ios', 'android'))
             ->addAlias($user_id)
-            ->addTag('all')
+//            ->addTag('all')
             ->setNotificationAlert('Hi, JPushnihao')
             ->setMessage($msg_content, $msg_title)
             ->setOptions(100000, 3600, null, false)
