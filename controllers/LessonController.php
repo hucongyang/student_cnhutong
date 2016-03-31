@@ -160,9 +160,9 @@ class LessonController extends ApiPublicController
             $this->_return('MSG_ERR_FAIL_LESSON_STUDENT_ID');
         }
 
-        if (Lesson::model()->isExistLessonStudentId($lessonStudentId)) {
-            $this->_return('MSG_EXIST_LESSON_STUDENT_ID');
-        }
+//        if (Lesson::model()->isExistLessonStudentId($lessonStudentId)) {
+//            $this->_return('MSG_EXIST_LESSON_STUDENT_ID');
+//        }
 
         if (!ctype_digit($memberId) || $memberId < 1) {
             $this->_return('MSG_NO_MEMBER');
@@ -181,7 +181,7 @@ class LessonController extends ApiPublicController
         if (Token::model()->verifyToken($user_id, $token)) {
 
             // 提交课时请假信息
-            Lesson::model()->lessonStudentLeave($memberId, $courseId, $lessonStudentId, $dateTime, $reason);
+            $lesson = Lesson::model()->lessonStudentLeave($memberId, $courseId, $lessonStudentId, $dateTime, $reason);
 
             // 增加用户操作log
             $action_id = 2202;
@@ -192,12 +192,20 @@ class LessonController extends ApiPublicController
             $params = substr($params, 0, -1);
             Log::model()->action_log($user_id, $action_id, $params);
 
-            $this->_return('MSG_SUCCESS');
+            if ($lesson) {
+                $this->_return('MSG_SUCCESS');
+            } else {
+                $this->_return('MSG_ERR_UNKOWN');
+            }
+
         } else {
             $this->_return('MSG_ERR_TOKEN');
         }
     }
 
+    /**
+     * 用户提交课时评价
+     */
     public function actionPostLessonEval()
     {
         if (!isset($_REQUEST['userId']) || !isset($_REQUEST['token'])

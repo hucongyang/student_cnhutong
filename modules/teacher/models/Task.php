@@ -215,7 +215,6 @@ class Task extends CActiveRecord
      */
     public function postSign($user_id, $lessonJson)
     {
-        $command = 1;
         $nowTime = date('Y-m-d H:m:i');
         try {
             $con_task = Yii::app()->cnhutong;
@@ -234,7 +233,6 @@ class Task extends CActiveRecord
                     )
                 );
 
-
                 if ($row['step'] == 2 || $row['step'] == 6)
                 {
                     // 判断 step = 2|6 添加补课机会记录
@@ -242,8 +240,53 @@ class Task extends CActiveRecord
                 } elseif ($row['step'] == 0) {
                     // step = 0 增加一条消息记录,jPush推送学员用户发送销课通知
                     $acceptIdArr = self::getAcceptIdByLessonStudentId($row['lessonStudentId']);
-                    foreach ($acceptIdArr as $acceptId) {
 
+                    // $acceptArr = array(); 则表示为该学员未绑定任何user_id 只记录消息，不推送
+                    if ($acceptIdArr && $acceptIdArr[0]['user_id']) {
+
+                        foreach ($acceptIdArr as $acceptId) {
+                            $lessonDetail           = Common::model()->getLessonDetailById($row['lessonStudentId']);
+                            // 推送相关补课消息给相应老师
+
+                            // 学员名称
+                            $studentName            = $lessonDetail['studentName'];
+
+                            // 时间
+                            $dateTime               = $lessonDetail['date'] . ' ' . $lessonDetail['time'];
+
+                            // 课程
+                            $courseName             = $lessonDetail['course'];
+
+                            // 课时
+                            $lesson_cnt_charged     = $lessonDetail['lesson_cnt_charged'];
+
+                            // 校区
+                            $departmentName         = $lessonDetail['department'];
+
+                            // 老师
+                            $teacherName            = Common::model()->getNameById($user_id);
+
+                            // 教室
+                            $classroomName          = $lessonDetail['classroom'];
+
+                            // 理由 备注 $extraReason
+
+                            $msg_content = " 学员: $studentName\n 时间: $dateTime\n 课程: $courseName\n 课时: $lesson_cnt_charged\n 老师: $teacherName\n 教室: $departmentName/$classroomName ";
+                            $msg_title = '销课通知';
+
+                            // 添加老师销课消息
+                            Notice::model()->insertNotice($user_id, $acceptId['user_id'], 1, null, null, 3, $msg_title, $msg_content, 1, 0);
+
+                            $push = Push::model()->pushMsg(10, $acceptId['user_id'], '1', $msg_title);
+                            if ($push) {
+                                return true;
+                            } else {
+                                return false;
+                            }
+
+                        }
+                    } else {
+                        // 记录消息,不推送
                         $lessonDetail           = Common::model()->getLessonDetailById($row['lessonStudentId']);
                         // 推送相关补课消息给相应老师
 
@@ -251,7 +294,7 @@ class Task extends CActiveRecord
                         $studentName            = $lessonDetail['studentName'];
 
                         // 时间
-                        $dateTime                   = $lessonDetail['date'] . ' ' . $lessonDetail['time'];
+                        $dateTime               = $lessonDetail['date'] . ' ' . $lessonDetail['time'];
 
                         // 课程
                         $courseName             = $lessonDetail['course'];
@@ -268,26 +311,30 @@ class Task extends CActiveRecord
                         // 教室
                         $classroomName          = $lessonDetail['classroom'];
 
+                        // 学员
+                        $studentId              = $lessonDetail['studentId'];
+
                         // 理由 备注 $extraReason
 
-                        $msg_content = " 学员: $studentName; 时间: $dateTime; 课程: $courseName; 课时: $lesson_cnt_charged; 老师: $teacherName; 教室: $departmentName/$classroomName ";
+                        $msg_content = " 学员: $studentName\n 时间: $dateTime\n 课程: $courseName\n 课时: $lesson_cnt_charged\n 老师: $teacherName\n 教室: $departmentName/$classroomName ";
                         $msg_title = '销课通知';
-                        Push::model()->pushMsg(10, $acceptId['user_id'], 'type = 3', $msg_title);
 
                         // 添加老师销课消息
-                        Notice::model()->insertNotice($user_id, $acceptId['user_id'], 1, null, null, 3, $msg_title, $msg_content, $nowTime, 1, 0);
-
+                        Notice::model()->insertNotice($user_id, $studentId, 1, null, null, 3, $msg_title, $msg_content, $nowTime, 1, 0);
                     }
 
-                }
 
+                } else {
+                    return false;
+                }
+                return true;        // 不加会返回null
             }
 
         } catch (Exception $e) {
             error_log($e);
             return false;
         }
-        return $command;
+
     }
 
     /**
@@ -415,13 +462,17 @@ class Task extends CActiveRecord
         try {
             $con_task = Yii::app()->cnhutong;
             $acceptId = $con_task->createCommand()
-                ->select('cum.user_id')
+                ->select('cum.user_id as user_id')
                 ->from('ht_lesson_student ls')
                 ->leftJoin('com_user_member cum', 'ls.student_id = cum.member_id')
                 ->where('ls.id = :lessonStudentId', array(':lessonStudentId' => $lessonStudentId))
                 ->queryAll();
 
-            $data = isset($acceptId) ? $acceptId : array();
+            if ($acceptId) {
+                $data = $acceptId;
+            } else {
+                $data = array();
+            }
 
         } catch (Exception $e) {
             error_log($e);

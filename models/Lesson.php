@@ -200,13 +200,18 @@ class Lesson extends CActiveRecord
 
             // 理由 备注 $extraReason
 
-            $msg_content = " 学员: $studentName; 时间: $dateTime; 课程: $courseName; 课时: $lesson_cnt_charged; 教室: $departmentName/$classroomName ";
+            $msg_content = " 学员: $studentName\n 时间: $dateTime\n 课程: $courseName\n 课时: $lesson_cnt_charged\n 教室: $departmentName/$classroomName\n 备注: $reason ";
             $msg_title = '学员请假通知';
-            Push::model()->pushMsg(11, $teacherId, 'type = 2', $msg_title);
 
             // 添加学员请假消息
             Notice::model()->insertNotice($memberId, $teacherId, 2, $leaveId, null, 2, $msg_title, $msg_content, $nowTime, 1, 0);
 
+            $push = Push::model()->pushMsg(11, $teacherId, '2', $msg_title);
+            if ($push) {
+                return true;
+            } else {
+                return false;
+            }
 
         } catch (Exception $e) {
             error_log($e);

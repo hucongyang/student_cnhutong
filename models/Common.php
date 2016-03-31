@@ -140,7 +140,7 @@ class Common extends CActiveRecord
             $con_user = Yii::app()->cnhutong;
             $detail = $con_user->createCommand()
                 ->select('m.name as studentName, ls.date, ls.time, c.course, ls.lesson_cnt_charged,
-                d.department, class.name as classroom, ls.teacher_id as teacherId')
+                d.department, class.name as classroom, ls.teacher_id as teacherId, ls.student_id as studentId')
                 ->from('ht_lesson_student ls')
                 ->leftJoin('ht_member m', 'ls.student_id = m.id')
                 ->leftJoin('ht_course c', 'ls.course_id = c.id')

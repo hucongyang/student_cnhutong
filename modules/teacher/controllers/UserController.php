@@ -498,7 +498,11 @@ class UserController extends ApiPublicController
         if (Token::model()->verifyToken($user_id, $token)) {
 
             $data = User::model()->postExtraLesson($user_id, $departmentId, $courseId, $classroomId, $extraTime, $studentJson, $extraReason);
-            $this->_return('MSG_SUCCESS', $data);
+            if ($data) {
+                $this->_return('MSG_SUCCESS');
+            } else {
+                $this->_return('MSG_ERR_UNKOWN');
+            }
         } else {
             $this->_return('MSG_ERR_TOKEN');
         }

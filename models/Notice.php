@@ -46,7 +46,7 @@ class Notice extends CActiveRecord
                     'create_time'               => $nowTime,
                     'title'                     => $title,
                     'content'                   => $content,
-                    'send_time'                 => $sendTime,
+                    'send_time'                 => $nowTime,
                     'flag'                      => $flag,
                     'status'                    => $status,
                 )

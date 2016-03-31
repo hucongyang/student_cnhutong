@@ -653,18 +653,24 @@ class User extends CActiveRecord
 
             // 理由 备注 $extraReason
 
-            $msg_content = " 申请人: $userName; 学员: $studentNames; 时间: $extraTime; 课程: $courseName; 老师: $teacherName; 教室: $departmentName/$classroomName; 备注: $extraReason ";
-            $msg_title = '老师补课申请type=3';
-            Push::model()->pushMsg(11, $user_id, 'type = 3', $msg_title);
+            $msg_content = " 申请人: $userName\n 学员: $studentNames\n 时间: $extraTime\n 课程: $courseName\n 老师: $teacherName\n 教室: $departmentName/$classroomName\n 备注: $extraReason ";
+            $msg_title = '老师补课申请';
 
             // 添加老师补课消息
             Notice::model()->insertNotice($user_id, $user_id, 1, null, $extraId, 3, $msg_title, $msg_content, $nowTime, 1, 0);
+
+            $push = Push::model()->pushMsg(11, $user_id, '3', $msg_title);
+            if ($push) {
+                return true;
+            } else {
+                return false;
+            }
 
         } catch (Exception $e) {
             error_log($e);
             return false;
         }
-        return $data;
+
     }
 
 

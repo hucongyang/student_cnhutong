@@ -31,65 +31,64 @@ class Push extends CActiveRecord
             return false;
         }
 
-        // 调用jPush API
-        $client = new JPush($app_key, $masterSecret);
-        $result = $client->push()
-            ->setPlatform(array('ios', 'android'))
-            ->addAlias($user_id)
-//            ->addTag('all')
-            ->setNotificationAlert('Hi, JPushnihao')
-            ->setMessage($msg_content, $msg_title)
-            ->setOptions(100000, 3600, null, false)
-            ->send();
+        $result = array();
+        try {
+            // 调用jPush API
+            $client = new JPush($app_key, $masterSecret);
+            $result = $client->push()
+                ->setPlatform(array('ios', 'android'))
+                ->addAlias($user_id)
+                ->addTag('all')
+                ->setNotificationAlert('Hi, JPushnihao')
+                ->setMessage($msg_content, $msg_title)
+                ->setOptions(100000, 3600, null, false)
+                ->send();
+        } catch (Exception $e) {
+            error_log($e);
+            return false;
+        }
 
-//        $message="";//存储推送状态
-//        if($result){
-//            $res_arr = json_encode($result, true);
-//            if(isset($res_arr['error'])){                       //如果返回了error则证明失败
-//                echo $res_arr['error']['message'];          //错误信息
-//                $error_code=$res_arr['error']['code'];             //错误码
-//                switch ($error_code) {
-//                    case 200:
-//                        $message= '发送成功！';
-//                        break;
-//                    case 1000:
-//                        $message= '失败(系统内部错误)';
-//                        break;
-//                    case 1001:
-//                        $message = '失败(只支持 HTTP Post 方法，不支持 Get 方法)';
-//                        break;
-//                    case 1002:
-//                        $message= '失败(缺少了必须的参数)';
-//                        break;
-//                    case 1003:
-//                        $message= '失败(参数值不合法)';
-//                        break;
-//                    case 1004:
-//                        $message= '失败(验证失败)';
-//                        break;
-//                    case 1005:
-//                        $message= '失败(消息体太大)';
-//                        break;
-//                    case 1008:
-//                        $message= '失败(appkey参数非法)';
-//                        break;
-//                    case 1020:
-//                        $message= '失败(只支持 HTTPS 请求)';
-//                        break;
-//                    case 1030:
-//                        $message= '失败(内部服务超时)';
-//                        break;
-//                    default:
-//                        $message= '失败(返回其他状态，目前不清楚额，请联系开发人员！)';
-//                        break;
-//                }
-//            }else{
-//                $message="发送成功！";
-//            }
-//        }else{      //接口调用失败或无响应
-//            $message='接口调用失败或无响应';
-//        }
-//        echo  "推送信息:{$message}";
+        $message="";    //存储推送状态
+        if($result){
+            $res_arr = json_encode($result, true);
+            if(isset($res_arr['error'])){                       //如果返回了error则证明失败
+                $message  = $res_arr['error']['message'];          //错误信息
+                $error_code     = $res_arr['error']['code'];             //错误码
+                self::insertPush($error_code, $message);
+            }else{
+                $message="发送成功！";
+                $error_code = 1111;
+                self::insertPush($error_code, $message);
+            }
+        }else{      //接口调用失败或无响应
+            $message = '接口调用失败或无响应';
+            $error_code = 0000;
+            self::insertPush($error_code, $message);
+        }
+        return true;
+    }
+
+    /**
+     * 记录jPush推送反馈信息
+     * @param $error_code
+     * @param $message
+     * @return bool
+     */
+    public function insertPush($error_code, $message)
+    {
+        try {
+            $con_user = Yii::app()->cnhutong;
+            $result = $con_user->createCommand()->insert('com_push',
+                array(
+                    'error_code'        => $error_code,
+                    'message'           => $message
+                )
+            );
+
+        } catch (Exception $e) {
+            error_log($e);
+            return false;
+        }
 
     }
 }
