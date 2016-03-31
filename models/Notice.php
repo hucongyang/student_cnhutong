@@ -59,7 +59,7 @@ class Notice extends CActiveRecord
     }
 
     /**
-     * 获取消息信息
+     * 教师获取消息信息
      * @param $user_id
      * @param $page
      * @param $type
@@ -77,6 +77,39 @@ class Notice extends CActiveRecord
             $sql = "SELECT id, title, content, create_time as time, flag, status
                     FROM " . self::tableName() . "
                     WHERE accept_id = " . $user_id ." and type = " . $type . "
+                    ORDER BY create_time desc
+                    " . $pageLimit ."
+                    ";
+            $result = $con_user->createCommand($sql)->queryAll();
+            $data['notices'] = $result;
+
+        } catch (Exception $e) {
+            error_log($e);
+            return false;
+        }
+        return $data;
+    }
+
+    /**
+     * 学生获得消息信息
+     * @param $user_id
+     * @param $page
+     * @param $type
+     * @return array|bool
+     */
+    public function getStudentNotices($user_id, $page, $type)
+    {
+        $data = array();
+        try {
+
+            $page = $page * 5;
+            $pageLimit = " limit $page, 5";
+
+            $con_user = Yii::app()->cnhutong;
+            $sql = "SELECT n.id as id, title, content, create_time as time, flag, n.status as status
+                    FROM com_notice n
+                    LEFT JOIN com_user_member cum ON n.accept_id = cum.member_id
+                    WHERE user_id = " . $user_id ." and type = " . $type . "
                     ORDER BY create_time desc
                     " . $pageLimit ."
                     ";

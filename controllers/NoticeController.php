@@ -35,7 +35,7 @@ class NoticeController extends ApiPublicController
         // 验证token
         if (Token::model()->verifyToken($user_id, $token)) {
 
-            $data = Notice::model()->getNotices($user_id, $page, $type);
+            $data = Notice::model()->getStudentNotices($user_id, $page, $type);
             $this->_return('MSG_SUCCESS', $data);
         } else {
             $this->_return('MSG_ERR_TOKEN');
