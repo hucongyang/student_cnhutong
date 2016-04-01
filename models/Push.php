@@ -48,23 +48,23 @@ class Push extends CActiveRecord
             return false;
         }
 
-        $message="";    //存储推送状态
-        if($result){
-            $res_arr = json_encode($result, true);
-            if(isset($res_arr['error'])){                       //如果返回了error则证明失败
-                $message  = $res_arr['error']['message'];          //错误信息
-                $error_code     = $res_arr['error']['code'];             //错误码
-                self::insertPush($error_code, $message);
-            }else{
-                $message="发送成功！";
-                $error_code = 1111;
-                self::insertPush($error_code, $message);
-            }
-        }else{      //接口调用失败或无响应
-            $message = '接口调用失败或无响应';
-            $error_code = 0000;
-            self::insertPush($error_code, $message);
-        }
+//        $message="";    //存储推送状态
+//        if($result){
+//            $res_arr = json_encode($result, true);
+//            if(isset($res_arr['error'])){                       //如果返回了error则证明失败
+//                $message  = $res_arr['error']['message'];          //错误信息
+//                $error_code     = $res_arr['error']['code'];             //错误码
+//                self::insertPush($error_code, $message);
+//            }else{
+//                $message="发送成功！";
+//                $error_code = 1111;
+//                self::insertPush($error_code, $message);
+//            }
+//        }else{      //接口调用失败或无响应
+//            $message = '接口调用失败或无响应';
+//            $error_code = 0000;
+//            self::insertPush($error_code, $message);
+//        }
         return true;
     }
 

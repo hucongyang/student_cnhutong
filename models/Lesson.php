@@ -59,15 +59,15 @@ class Lesson extends CActiveRecord
                     FROM ht_lesson_student AS t1
                     WHERE student_id IN (" . $member . ") AND t1.step>=0 and  t1.step not in(4,5,6)
                     AND t1.status_id != 5
-                    AND t1.date < '" . $nextDate . "-" . 01 . "'
-                    AND t1.date > '" . $nowDate . "-" . 01 . "'
+                    AND t1.date <= '" . $nextDate . "-" . 01 . "'
+                    AND t1.date >= '" . $nowDate . "-" . 01 . "'
                     GROUP BY t1.date";
             $command1 = $con_lesson->createCommand($sql1)->queryAll();
             $data['lessons'] = $command1;
             // 日历课程,具体日期课时状态
             $sql2 = "SELECT
                     a.id AS lessonStudentId, a.date AS lessonDate, a.time AS lessonTime,
-                    a.step as step, s.id AS stujectId, s.title AS subjectName,
+                    a.step as step, s.id AS subjectId, s.title AS subjectName,
                     a.department_id AS departmentId, d.name AS departmentName,
                     a.teacher_id AS teacherId, c.name AS teacherName,
                     a.student_id AS memberId, b.name AS memberName

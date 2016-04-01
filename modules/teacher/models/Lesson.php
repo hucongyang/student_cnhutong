@@ -34,8 +34,8 @@ class Lesson extends CActiveRecord
                     FROM ht_lesson_student AS t1
                     WHERE teacher_id = '" . $user_id . "' AND t1.step>=0 and  t1.step not in(4,5,6)
                     AND t1.status_id != 5
-                    AND t1.date < '" . $nextDate . "-" . 01 . "'
-                    AND t1.date > '" . $nowDate . "-" . 01 . "'
+                    AND t1.date <= '" . $nextDate . "-" . 01 . "'
+                    AND t1.date >= '" . $nowDate . "-" . 01 . "'
                     GROUP BY t1.date";
             $command1 = $con_lesson->createCommand($sql1)->queryAll();
             $data['lessons'] = $command1;
