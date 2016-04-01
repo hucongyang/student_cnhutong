@@ -74,6 +74,22 @@ class Notice extends CActiveRecord
             $pageLimit = " limit $page, 5";
 
             $con_user = Yii::app()->cnhutong;
+
+            // 前端请求消息列表接口后，后台自动把未读消息置为已读状态
+            // 获得需要修改的消息id
+            $sql1 = "SELECT n.id as id
+                     FROM com_notice n
+                     WHERE accept_id = " . $user_id ." and type = " . $type . " and n.status = 0";
+            $result1 = $con_user->createCommand($sql1)->queryAll();
+            // 修改消息状态
+            if ($result1) {
+                $idArr = array_column($result1, 'id');
+                $ids = implode(",", $idArr);
+                $sql2 = "UPDATE com_notice SET status = 1 WHERE id IN ($ids)";
+                $con_user->createCommand($sql2)->execute();
+            }
+
+            // 获得符合条件的消息
             $sql = "SELECT id, title, content, create_time as time, flag, status
                     FROM " . self::tableName() . "
                     WHERE accept_id = " . $user_id ." and type = " . $type . "
@@ -106,6 +122,23 @@ class Notice extends CActiveRecord
             $pageLimit = " limit $page, 5";
 
             $con_user = Yii::app()->cnhutong;
+
+            // 前端请求消息列表接口后，后台自动把未读消息置为已读状态
+            // 获得需要修改的消息id
+            $sql1 = "SELECT n.id as id
+                     FROM com_notice n
+                     LEFT JOIN com_user_member cum ON n.accept_id = cum.member_id
+                     WHERE user_id = " . $user_id ." and type = " . $type . " and n.status = 0";
+            $result1 = $con_user->createCommand($sql1)->queryAll();
+            // 修改消息状态
+            if ($result1) {
+                $idArr = array_column($result1, 'id');
+                $ids = implode(",", $idArr);
+                $sql2 = "UPDATE com_notice SET status = 1 WHERE id IN ($ids)";
+                $con_user->createCommand($sql2)->execute();
+            }
+
+            // 获得符合条件的消息
             $sql = "SELECT n.id as id, title, content, create_time as time, flag, n.status as status
                     FROM com_notice n
                     LEFT JOIN com_user_member cum ON n.accept_id = cum.member_id
