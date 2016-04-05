@@ -38,15 +38,11 @@ class UserController extends ApiPublicController
         if (strcmp($password, $user_info['password']) == 0) {
             // 返回token值
             $result_token = Token::model()->updateUserToken($user_id);
-            $messageFlag  = 1;
-            $noticeFlag   = 0;
             if ($result_token) {
                 // 登录日志，修改token
                 if ($user_info) {
                     $data['teacherId']          = $user_info['id'];
                     $data['token']              = $result_token;
-                    $data['messageFlag']        = $messageFlag;
-                    $data['noticeFlag']         = $noticeFlag;
                     $this->_return('MSG_SUCCESS', $data);
                 } else {
                     $this->_return('MSG_ERR_UNKOWN');
@@ -455,7 +451,11 @@ class UserController extends ApiPublicController
         if (!isset($_REQUEST['teacherId']) || !isset($_REQUEST['token'])
             || !isset($_REQUEST['departmentId']) || !isset($_REQUEST['courseId'])
             || !isset($_REQUEST['classroomId']) || !isset($_REQUEST['extraTime'])
-            || !isset($_REQUEST['extraDetail']) || !isset($_REQUEST['extraReason']) ) {
+            || !isset($_REQUEST['extraDetail']) || !isset($_REQUEST['extraReason'])
+            || empty($_REQUEST['teacherId']) || empty($_REQUEST['token'])
+            || empty($_REQUEST['departmentId']) || empty($_REQUEST['courseId'])
+            || empty($_REQUEST['classroomId']) || empty($_REQUEST['extraTime'])
+            || empty($_REQUEST['extraDetail']) || empty($_REQUEST['extraReason'])) {
             $this->_return('MSG_ERR_LESS_PARAM');
         }
 
