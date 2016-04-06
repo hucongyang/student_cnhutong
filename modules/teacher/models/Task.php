@@ -271,7 +271,7 @@ class Task extends CActiveRecord
 
                             // 理由 备注 $extraReason
 
-                            $msg_content = " 学员: $studentName\n 时间: $dateTime\n 课程: $courseName\n 课时: $lesson_cnt_charged\n 老师: $teacherName\n 教室: $departmentName/$classroomName ";
+                            $msg_content = " 学员: $studentName &8424 时间: $dateTime &8424 课程: $courseName &8424 课时: $lesson_cnt_charged &8424 老师: $teacherName &8424 教室: $departmentName/$classroomName ";
                             $msg_title = '销课通知';
 
                             // 添加老师销课消息
@@ -316,7 +316,7 @@ class Task extends CActiveRecord
 
                         // 理由 备注 $extraReason
 
-                        $msg_content = " 学员: $studentName\n 时间: $dateTime\n 课程: $courseName\n 课时: $lesson_cnt_charged\n 老师: $teacherName\n 教室: $departmentName/$classroomName ";
+                        $msg_content = " 学员: $studentName &8424 时间: $dateTime &8424 课程: $courseName &8424 课时: $lesson_cnt_charged &8424 老师: $teacherName &8424 教室: $departmentName/$classroomName ";
                         $msg_title = '销课通知';
 
                         // 添加老师销课消息

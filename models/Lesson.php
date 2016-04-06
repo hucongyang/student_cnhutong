@@ -200,7 +200,7 @@ class Lesson extends CActiveRecord
 
             // 理由 备注 $extraReason
 
-            $msg_content = " 学员: $studentName\n 时间: $dateTime\n 课程: $courseName\n 课时: $lesson_cnt_charged\n 教室: $departmentName/$classroomName\n 备注: $reason ";
+            $msg_content = " 学员: $studentName &8424 时间: $dateTime &8424 课程: $courseName &8424 课时: $lesson_cnt_charged &8424 教室: $departmentName/$classroomName &8424 备注: $reason ";
             $msg_title = '学员请假通知';
 
             // 添加学员请假消息

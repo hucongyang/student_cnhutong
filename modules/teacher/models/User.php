@@ -653,7 +653,7 @@ class User extends CActiveRecord
 
             // 理由 备注 $extraReason
 
-            $msg_content = " 申请人: $userName\n 学员: $studentNames\n 时间: $extraTime\n 课程: $courseName\n 老师: $teacherName\n 教室: $departmentName/$classroomName\n 备注: $extraReason ";
+            $msg_content = " 申请人: $userName &8424 学员: $studentNames &8424 时间: $extraTime &8424 课程: $courseName &8424 老师: $teacherName &8424 教室: $departmentName/$classroomName &8424 备注: $extraReason ";
             $msg_title = '老师补课申请';
 
             // 添加老师补课消息
