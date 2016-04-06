@@ -83,7 +83,11 @@ class Notice extends CActiveRecord
             $result1 = $con_user->createCommand($sql1)->queryAll();
             // 修改消息状态
             if ($result1) {
-                $idArr = array_column($result1, 'id');
+//                $idArr = array_column($result1, 'id');
+                foreach ($result1 as $row) {
+                    $idArr[] = $row['id'];
+                }
+
                 $ids = implode(",", $idArr);
                 $sql2 = "UPDATE com_notice SET status = 1 WHERE id IN ($ids)";
                 $con_user->createCommand($sql2)->execute();
@@ -132,7 +136,11 @@ class Notice extends CActiveRecord
             $result1 = $con_user->createCommand($sql1)->queryAll();
             // 修改消息状态
             if ($result1) {
-                $idArr = array_column($result1, 'id');
+//                $idArr = array_column($result1, 'id');
+                foreach ($result1 as $row) {
+                    $idArr[] = $row['id'];
+                }
+
                 $ids = implode(",", $idArr);
                 $sql2 = "UPDATE com_notice SET status = 1 WHERE id IN ($ids)";
                 $con_user->createCommand($sql2)->execute();

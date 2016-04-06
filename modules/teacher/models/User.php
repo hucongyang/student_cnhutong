@@ -774,7 +774,10 @@ class User extends CActiveRecord
                     ";
             $result = $con_user->createCommand($sql)->queryAll();
 
-            $types  = array_column($result, 'type');
+//            $types  = array_column($result, 'type');
+            foreach ($result as $row) {
+                $types[] = $row['type'];
+            }
 
             // 新消息状态
             if ($types) {
