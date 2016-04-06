@@ -470,4 +470,60 @@ class User extends CActiveRecord
         }
         return $data;
     }
+
+    /**
+     * 消息状态接口
+     * @param $user_id
+     * @return bool
+     */
+    public function getNoticeFlag($user_id)
+    {
+        $data = array();
+        try {
+            $con_user = Yii::app()->cnhutong;
+            // 获得符合条件的消息
+            $sql = "SELECT n.id as id, type
+                    FROM com_notice n
+                    LEFT JOIN com_user_member cum ON n.accept_id = cum.member_id
+                    WHERE user_id = " . $user_id ." and n.status = 0
+                    GROUP BY type
+                    ";
+            $result = $con_user->createCommand($sql)->queryAll();
+
+            $types  = array_column($result, 'type');
+
+            // 新消息状态
+            if ($types) {
+                $data['noticeFlag']     = 1;
+            } else {
+                $data['lessonFlag']     = 0;
+            }
+
+            // 课程消息状态
+            if (in_array(1, $types)) {
+                $data['lessonFlag']     = 1;
+            } else {
+                $data['lessonFlag']     = 0;
+            }
+
+            // 请假消息状态
+            if (in_array(2, $types)) {
+                $data['leaveFlag']     = 1;
+            } else {
+                $data['leaveFlag']     = 0;
+            }
+
+            // 补课消息状态
+            if (in_array(3, $types)) {
+                $data['extraFlag']     = 1;
+            } else {
+                $data['extraFlag']     = 0;
+            }
+
+        } catch (Exception $e) {
+            error_log($e);
+            return false;
+        }
+        return $data;
+    }
 }

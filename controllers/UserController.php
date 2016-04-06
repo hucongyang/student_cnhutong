@@ -736,4 +736,28 @@ class UserController extends ApiPublicController
             $this->_return('MSG_ERR_TOKEN');
         }
     }
+
+    /**
+     *  消息状态接口
+     */
+    public function actionGetNoticeFlag()
+    {
+        if (!isset($_REQUEST['userId']) || !isset($_REQUEST['token'])) {
+            $this->_return('MSG_ERR_LESS_PARAM');
+        }
+
+        $user_id = trim(Yii::app()->request->getParam('userId', null));
+        $token = trim(Yii::app()->request->getParam('token', null));
+
+        // 验证token
+        if (Token::model()->verifyToken($user_id, $token)) {
+            // 消息状态接口
+
+            $data = User::model()->getNoticeFlag($user_id);
+
+            $this->_return('MSG_SUCCESS', $data);
+        } else {
+            $this->_return('MSG_ERR_TOKEN');
+        }
+    }
 }
