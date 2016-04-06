@@ -491,7 +491,7 @@ class User extends CActiveRecord
             $result = $con_user->createCommand($sql)->queryAll();
 
 //            $types  = array_column($result, 'type');
-
+            $types = array();
             foreach ($result as $row) {
                 $types[] = $row['type'];
             }
@@ -499,29 +499,33 @@ class User extends CActiveRecord
             // 新消息状态
             if ($types) {
                 $data['noticeFlag']     = 1;
+
+                // 课程消息状态
+                if (in_array(1, $types)) {
+                    $data['lessonFlag']     = 1;
+                } else {
+                    $data['lessonFlag']     = 0;
+                }
+
+                // 请假消息状态
+                if (in_array(2, $types)) {
+                    $data['leaveFlag']     = 1;
+                } else {
+                    $data['leaveFlag']     = 0;
+                }
+
+                // 补课消息状态
+                if (in_array(3, $types)) {
+                    $data['extraFlag']     = 1;
+                } else {
+                    $data['extraFlag']     = 0;
+                }
+
             } else {
+                $data['noticeFlag']     = 0;
                 $data['lessonFlag']     = 0;
-            }
-
-            // 课程消息状态
-            if (in_array(1, $types)) {
-                $data['lessonFlag']     = 1;
-            } else {
-                $data['lessonFlag']     = 0;
-            }
-
-            // 请假消息状态
-            if (in_array(2, $types)) {
-                $data['leaveFlag']     = 1;
-            } else {
-                $data['leaveFlag']     = 0;
-            }
-
-            // 补课消息状态
-            if (in_array(3, $types)) {
-                $data['extraFlag']     = 1;
-            } else {
-                $data['extraFlag']     = 0;
+                $data['leaveFlag']      = 0;
+                $data['extraFlag']      = 0;
             }
 
         } catch (Exception $e) {
