@@ -819,4 +819,65 @@ class User extends CActiveRecord
         return $data;
     }
 
+    /**
+     * 教师意见反馈接口
+     * @param $user_id
+     * @param $reason
+     * @param $flag
+     * @return bool
+     */
+    public function postFeedBack($user_id, $reason, $flag)
+    {
+        $nowTime = date('Y-m-d H:i:s');
+        try {
+            $con_user = Yii::app()->cnhutong;
+            $table_name = 'com_feedback';
+            $data = $con_user->createCommand()->insert($table_name,
+                array(
+                    'user_id'           => $user_id,
+                    'reason'            => $reason,
+                    'flag'              => $flag,
+                    'create_ts'         => $nowTime,
+                    'status'            => 1
+                )
+            );
+
+        } catch (Exception $e) {
+            error_log($e);
+            return false;
+        }
+        return $data;
+    }
+
+
+    /**
+     * 教师意见反馈列表
+     * @param $user_id
+     * @param $page
+     * @return bool
+     */
+    public function feedBackList($user_id, $page)
+    {
+        try {
+
+            $page = $page * 10;
+            $pageLimit = "limit $page, 10";
+
+            $con_user = Yii::app()->cnhutong;
+            $sql = "SELECT id AS feedBackId, reason, create_ts AS createTime
+                    FROM com_feedback
+                    WHERE user_id = " . $user_id . " AND flag = 1 AND `status` = 1
+                    ORDER BY create_ts DESC
+                    " . $pageLimit . "
+                    ";
+
+            $result = $con_user->createCommand($sql)->queryAll();
+            $data['feedBacks']  = $result;
+
+        } catch (Exception $e) {
+            error_log($e);
+            return false;
+        }
+        return $data;
+    }
 }

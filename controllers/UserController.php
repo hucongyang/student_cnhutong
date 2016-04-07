@@ -760,4 +760,70 @@ class UserController extends ApiPublicController
             $this->_return('MSG_ERR_TOKEN');
         }
     }
+
+    /**
+     *  用户意见反馈
+     */
+    public function actionPostFeedback()
+    {
+        if (!isset($_REQUEST['userId']) || !isset($_REQUEST['token'])
+            || !isset($_REQUEST['reason'])) {
+            $this->_return('MSG_ERR_LESS_PARAM');
+        }
+
+        $user_id = trim(Yii::app()->request->getParam('userId', null));
+        $token = trim(Yii::app()->request->getParam('token', null));
+        $reason = trim(Yii::app()->request->getParam('reason', null));
+
+        // 用户名不存在,返回错误
+        if (!ctype_digit($user_id) || $user_id < 1) {
+            $this->_return('MSG_ERR_NO_USER');
+        }
+
+        if (empty($reason)) {
+            $this->_return('MSG_ERR_FAIL_REASON');
+        }
+
+        // 验证token
+        if (Token::model()->verifyToken($user_id, $token)) {
+            // 用户投诉/举手信息
+            User::model()->postFeedBack($user_id, $reason, 2);
+            $this->_return('MSG_SUCCESS');
+        } else {
+            $this->_return('MSG_ERR_TOKEN');
+        }
+    }
+
+    /**
+     *  用户意见反馈列表
+     */
+    public function actionFeedbackList()
+    {
+        if (!isset($_REQUEST['userId']) || !isset($_REQUEST['token'])
+            || !isset($_REQUEST['page'])) {
+            $this->_return('MSG_ERR_LESS_PARAM');
+        }
+
+        $user_id = trim(Yii::app()->request->getParam('userId', null));
+        $token = trim(Yii::app()->request->getParam('token', null));
+        $page = trim(Yii::app()->request->getParam('page', null));
+
+        // 用户名不存在,返回错误
+        if (!ctype_digit($user_id) || $user_id < 1) {
+            $this->_return('MSG_ERR_NO_USER');
+        }
+
+        if (!ctype_digit($page) || $page < 0) {
+            $this->_return('MSG_ERR_FAIL_PAGE');
+        }
+
+        // 验证token
+        if (Token::model()->verifyToken($user_id, $token)) {
+            // 意见反馈列表
+            $data = User::model()->feedBackList($user_id, $page);
+            $this->_return('MSG_SUCCESS', $data);
+        } else {
+            $this->_return('MSG_ERR_TOKEN');
+        }
+    }
 }
