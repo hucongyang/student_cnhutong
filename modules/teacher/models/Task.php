@@ -278,11 +278,11 @@ class Task extends CActiveRecord
                             Notice::model()->insertNotice($user_id, $acceptId['user_id'], 1, null, null, 3, $msg_title, $msg_content, 1, 0);
 
                             $push = Push::model()->pushMsg(10, $acceptId['user_id'], '1', $msg_title);
-                            if ($push) {
-                                return true;
-                            } else {
-                                return false;
-                            }
+//                            if ($push) {
+//                                return true;
+//                            } else {
+//                                return false;
+//                            }
 
                         }
                     } else {
