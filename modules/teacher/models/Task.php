@@ -327,7 +327,7 @@ class Task extends CActiveRecord
                 } else {
                     return false;
                 }
-                return true;        // 不加会返回null
+//                return true;        // 不加会返回null
             }
 
         } catch (Exception $e) {
