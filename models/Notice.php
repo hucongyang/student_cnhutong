@@ -25,11 +25,12 @@ class Notice extends CActiveRecord
      * @param $type
      * @param $title
      * @param $content
+     * @param $sendTime
      * @param $flag
      * @param $status
      * @return bool
      */
-    public function insertNotice($sendId, $acceptId, $label, $leaveId, $extraId, $type, $title, $content, $flag, $status)
+    public function insertNotice($sendId, $acceptId, $label, $leaveId, $extraId, $type, $title, $content, $sendTime, $flag, $status)
     {
         $nowTime = date('Y-m-d H:i:s');
         try {
@@ -45,6 +46,7 @@ class Notice extends CActiveRecord
                     'create_time'               => $nowTime,
                     'title'                     => $title,
                     'content'                   => $content,
+                    'send_time'                 => $sendTime,
                     'flag'                      => $flag,
                     'status'                    => $status,
                 )

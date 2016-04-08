@@ -275,7 +275,7 @@ class Task extends CActiveRecord
                             $msg_title = '销课通知';
 
                             // 添加老师销课消息
-                            Notice::model()->insertNotice($user_id, $acceptId['user_id'], 1, null, null, 3, $msg_title, $msg_content, 1, 0);
+                            Notice::model()->insertNotice($user_id, $acceptId['user_id'], 1, null, null, 3, $msg_title, $msg_content, $nowTime, 1, 0);
 
                             $push = Push::model()->pushMsg(10, $acceptId['user_id'], '1', $msg_title);
 //                            if ($push) {
