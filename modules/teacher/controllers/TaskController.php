@@ -120,12 +120,14 @@ class TaskController extends ApiPublicController
             // 提交任务签到
             $data = Task::model()->postSign($user_id, $lessonJson);
 
-            if ($data) {
-                $this->_return('MSG_SUCCESS');
-            } else {
-//                $this->_return('MSG_ERR_FAIL_LESSON_FORMAT');       // 前端数据格式错误，sql 执行错误
-                $this->_return('MSG_ERR_UNKOWN');       // sql 执行错误
-            }
+            $this->_return('MSG_SUCCESS');
+
+//            if ($data) {
+//                $this->_return('MSG_SUCCESS');
+//            } else {
+////                $this->_return('MSG_ERR_FAIL_LESSON_FORMAT');       // 前端数据格式错误，sql 执行错误
+//                $this->_return('MSG_ERR_UNKOWN');       // sql 执行错误
+//            }
         } else {
             $this->_return('MSG_ERR_TOKEN');
         }
