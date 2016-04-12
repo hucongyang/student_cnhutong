@@ -198,12 +198,58 @@ class Task extends CActiveRecord
                     AND a.status_id NOT IN (2, 4)
                     order by a.student_id";
             $command = $con_task->createCommand($sql)->queryAll();
-            $data['lessonStudents'] = $command;
+
+            $result = array();
+            foreach ($command as $row) {
+                $result['lessonStudentId']          = $row['lessonStudentId'];
+                $result['studentId']                = $row['studentId'];
+                $result['studentName']              = $row['studentName'];
+                $result['step']                     = $row['step'];
+
+                $isLeave    = self::isLeaveLessonStudentId($row['lessonStudentId']);
+                if ($isLeave) {
+                    $result['isLeave'] = '1';
+                } else {
+                    $result['isLeave'] = '0';
+                }
+
+                $data['lessonStudents'][] = $result;
+            }
+
+//            $data['lessonStudents'] = $command;
         } catch (Exception $e) {
             error_log($e);
             return false;
         }
         return $data;
+    }
+
+    /**
+     * 判断课时是否请假
+     * @param $lessonStudentId
+     * @return bool
+     */
+    public function isLeaveLessonStudentId($lessonStudentId)
+    {
+        $flag = false;
+        try {
+            $con_user = Yii::app()->cnhutong;
+            $result = $con_user->createCommand()
+                ->select('id')
+                ->from('com_leave')
+                ->where('lesson_student_id = :lessonStudentId', array(':lessonStudentId' => $lessonStudentId))
+                ->limit(0, 1)
+                ->queryScalar();
+            if ($result) {
+                $flag = true;
+            } else {
+                $flag = false;
+            }
+        } catch (Exception $e) {
+            error_log($e);
+            return false;
+        }
+        return $flag;
     }
 
     /**
