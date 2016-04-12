@@ -629,8 +629,8 @@ class UserController extends ApiPublicController
         // 验证token
         if (Token::model()->verifyToken($user_id, $token)) {
             // 用户投诉/举手信息
-            User::model()->postFeedBack($user_id, $reason, 1);
-            $this->_return('MSG_SUCCESS');
+            $data = User::model()->postFeedBack($user_id, $reason, 1);
+            $this->_return('MSG_SUCCESS', $data);
         } else {
             $this->_return('MSG_ERR_TOKEN');
         }

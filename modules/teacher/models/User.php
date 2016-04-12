@@ -828,11 +828,12 @@ class User extends CActiveRecord
      */
     public function postFeedBack($user_id, $reason, $flag)
     {
+        $data = array();
         $nowTime = date('Y-m-d H:i:s');
         try {
             $con_user = Yii::app()->cnhutong;
             $table_name = 'com_feedback';
-            $data = $con_user->createCommand()->insert($table_name,
+            $con_user->createCommand()->insert($table_name,
                 array(
                     'user_id'           => $user_id,
                     'reason'            => $reason,
@@ -841,6 +842,10 @@ class User extends CActiveRecord
                     'status'            => 1
                 )
             );
+
+            $data['feedBackId']         = Yii::app()->cnhutong->getLastInsertId();
+            $data['reason']             = $reason;
+            $data['createTime']         = $nowTime;
 
         } catch (Exception $e) {
             error_log($e);

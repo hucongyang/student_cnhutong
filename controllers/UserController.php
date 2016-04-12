@@ -5,6 +5,12 @@
  */
 class UserController extends ApiPublicController
 {
+    public function actionSms()
+    {
+        $sms = Sms::model()->postSms(15201920323, 111111);
+        var_dump($sms);
+    }
+
     /**
      *  获取手机验证码
      */
@@ -787,8 +793,8 @@ class UserController extends ApiPublicController
         // 验证token
         if (Token::model()->verifyToken($user_id, $token)) {
             // 用户投诉/举手信息
-            User::model()->postFeedBack($user_id, $reason, 2);
-            $this->_return('MSG_SUCCESS');
+            $data = User::model()->postFeedBack($user_id, $reason, 2);
+            $this->_return('MSG_SUCCESS', $data);
         } else {
             $this->_return('MSG_ERR_TOKEN');
         }
