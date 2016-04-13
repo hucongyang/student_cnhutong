@@ -231,14 +231,13 @@ class Task extends CActiveRecord
      */
     public function isLeaveLessonStudentId($lessonStudentId)
     {
-        $flag = false;
         try {
             $con_user = Yii::app()->cnhutong;
             $result = $con_user->createCommand()
                 ->select('id')
                 ->from('com_leave')
                 ->where('lesson_student_id = :lessonStudentId', array(':lessonStudentId' => $lessonStudentId))
-                ->limit(0, 1)
+                ->limit(1)
                 ->queryScalar();
             if ($result) {
                 $flag = true;
