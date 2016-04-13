@@ -202,11 +202,12 @@ class Lesson extends CActiveRecord
 
             $msg_content = " 学员: $studentName &8424 时间: $dateTime &8424 课程: $courseName &8424 课时: $lesson_cnt_charged &8424 教室: $departmentName/$classroomName &8424 备注: $reason ";
             $msg_title = '学员请假通知';
+            $alert_content = $dateTime . " 的 " . $courseName . " 有一位学员请假";
 
             // 添加学员请假消息
             Notice::model()->insertNotice($memberId, $teacherId, 2, $leaveId, null, 2, $msg_title, $msg_content, $nowTime, 1, 0);
 
-            $push = Push::model()->pushMsg(11, $teacherId, '2', $msg_title);
+            $push = Push::model()->pushMsg(11, $teacherId, '2', $msg_title, $alert_content);
             if ($push) {
                 return true;
             } else {
