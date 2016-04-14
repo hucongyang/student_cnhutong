@@ -41,6 +41,8 @@ class Push extends CActiveRecord
                 ->addAlias($user_id)
                 ->addTag('all')
                 ->setNotificationAlert($alert_content)
+                ->addAndroidNotification('Hi, android notification', 'notification title', 1, array("key1"=>"value1", "key2"=>"value2"))
+                ->addIosNotification("Hi, iOS notification", 'iOS sound', '+1', true, 'iOS category', array("key1"=>"value1", "key2"=>"value2"))
                 ->setMessage($msg_content, $msg_title)
                 ->setOptions(100000, 3600, null, false)
                 ->send();
