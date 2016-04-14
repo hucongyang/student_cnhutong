@@ -40,8 +40,8 @@ class Push extends CActiveRecord
                 ->setPlatform(array('ios', 'android'))
                 ->addAlias($user_id)
                 ->addTag('all')
-                ->addAndroidNotification($alert_content, $msg_title, 1, array("msg_type" => $msg_type))
-                ->addIosNotification($alert_content, $msg_title, '+1', true, 'iOS category', array("msg_type" => $msg_type))
+                ->addAndroidNotification($alert_content, $msg_title, 1, array("msg_type" => $msg_type, "msg_title" => $msg_title))
+                ->addIosNotification($alert_content, $msg_title, '+1', true, 'iOS category', array("msg_type" => $msg_type, "msg_title" => $msg_title))
                 ->setOptions(100000, 3600, null, false)
                 ->send();
         } catch (Exception $e) {
