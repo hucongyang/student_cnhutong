@@ -13,12 +13,12 @@ class Push extends CActiveRecord
     /**
      * @param $app_id
      * @param $user_id
-     * @param $msg_content
+     * @param $msg_type
      * @param $msg_title
      * @param $alert_content
      * @return bool
      */
-    public function pushMsg($app_id, $user_id, $msg_content, $msg_title, $alert_content)
+    public function pushMsg($app_id, $user_id, $msg_type, $msg_title, $alert_content)
     {
         if ($app_id == 10) {
             // 学员端jPush
@@ -40,10 +40,8 @@ class Push extends CActiveRecord
                 ->setPlatform(array('ios', 'android'))
                 ->addAlias($user_id)
                 ->addTag('all')
-                ->setNotificationAlert($alert_content)
-                ->addAndroidNotification('Hi, android notification', 'notification title', 1, array("key1"=>"value1", "key2"=>"value2"))
-                ->addIosNotification("Hi, iOS notification", 'iOS sound', '+1', true, 'iOS category', array("key1"=>"value1", "key2"=>"value2"))
-                ->setMessage($msg_content, $msg_title)
+                ->addAndroidNotification($alert_content, $msg_title, 1, array("msg_type" => $msg_type))
+                ->addIosNotification($alert_content, $msg_title, '+1', true, 'iOS category', array("msg_type" => $msg_type))
                 ->setOptions(100000, 3600, null, false)
                 ->send();
         } catch (Exception $e) {
