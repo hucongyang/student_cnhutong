@@ -655,11 +655,12 @@ class User extends CActiveRecord
 
             $msg_content = " 申请人: $userName &8424 学员: $studentNames &8424 时间: $extraTime &8424 课程: $courseName &8424 老师: $teacherName &8424 教室: $departmentName/$classroomName &8424 备注: $extraReason ";
             $msg_title = '老师补课申请';
+            $alert_content = $teacherName . " 提交了 " . $extraTime ." 的补课申请";
 
             // 添加老师补课消息
             Notice::model()->insertNotice($user_id, $user_id, 1, null, $extraId, 3, $msg_title, $msg_content, $nowTime, 1, 0);
 
-            $push = Push::model()->pushMsg(11, $user_id, '3', $msg_title);
+            $push = Push::model()->pushMsg(11, $user_id, '3', $msg_title, $alert_content);
             if ($push) {
                 return true;
             } else {
