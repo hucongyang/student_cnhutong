@@ -5,8 +5,8 @@ return array(
     //学员端10
     'student_JPush' => array(
         // 极光推送 密钥
-        'app_key'           => '35c36a6d49393825158a6923',
-        'master_secret'     => 'd1ca041b7d69a8f10c9d9320'
+        'app_key'           => '479ec384f865560c0ade7ea0',
+        'master_secret'     => '36af867b15c8e53162bc546b'
     ),
 
     //教师端11
