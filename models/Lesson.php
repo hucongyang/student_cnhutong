@@ -211,11 +211,11 @@ class Lesson extends CActiveRecord
             Notice::model()->insertNotice($memberId, $memberId, 2, $leaveId, null, 2, $msg_title, $msg_content, $nowTime, 1, 0);
 
             $push = Push::model()->pushMsg(11, $teacherId, '2', $msg_title, $alert_content);
-            if ($push) {
-                return true;
-            } else {
-                return false;
-            }
+//            if ($push) {
+//                return true;
+//            } else {
+//                return false;
+//            }
 
         } catch (Exception $e) {
             error_log($e);

@@ -192,11 +192,12 @@ class LessonController extends ApiPublicController
             $params = substr($params, 0, -1);
             Log::model()->action_log($user_id, $action_id, $params);
 
-            if ($lesson) {
-                $this->_return('MSG_SUCCESS');
-            } else {
-                $this->_return('MSG_ERR_UNKOWN');
-            }
+//            if ($lesson) {
+//                $this->_return('MSG_SUCCESS');
+//            } else {
+//                $this->_return('MSG_ERR_UNKOWN');
+//            }
+            $this->_return('MSG_SUCCESS');
 
         } else {
             $this->_return('MSG_ERR_TOKEN');
