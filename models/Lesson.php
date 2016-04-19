@@ -57,7 +57,7 @@ class Lesson extends CActiveRecord
             $sql1 = "SELECT
                     t1.date as lessonDate, min(t1.status_id) as lessonStatus
                     FROM ht_lesson_student AS t1
-                    WHERE student_id IN (" . $member . ") AND t1.step>=0 and  t1.step not in(4,5,6)
+                    WHERE student_id IN (" . $member . ") AND t1.step>=0 and  t1.step not in(4,5)
                     AND t1.status_id != 5
                     AND t1.date <= '" . $nextDate . "-" . 01 . "'
                     AND t1.date >= '" . $nowDate . "-" . 01 . "'
