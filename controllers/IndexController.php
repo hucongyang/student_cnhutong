@@ -30,12 +30,12 @@ class IndexController extends Controller
 
     public function actionJPush()
     {
-        $client = new JPush(Yii::app()->params['student_JPush']['app_key'], Yii::app()->params['student_JPush']['master_secret']);
+        $client = new JPush(Yii::app()->params['teacher_JPush']['app_key'], Yii::app()->params['teacher_JPush']['master_secret']);
         $result = $client->push()
             ->setPlatform(array('ios', 'android'))
             ->addAlias('alias1')
             ->addTag('all')
-            ->setNotificationAlert('Hi, JPushnihao')
+            ->setNotificationAlert('Hi, hello')
             ->addAndroidNotification('Hi, android notification', 'notification title', 1, array("key1"=>"value1", "key2"=>"value2"))
             ->addIosNotification("Hi, iOS notification", 'iOS sound', JPush::DISABLE_BADGE, true, 'iOS category', array("key1"=>"value1", "key2"=>"value2"))
             ->setMessage("msg content", 'msg title', 'type', array("key1"=>"value1", "key2"=>"value2"))

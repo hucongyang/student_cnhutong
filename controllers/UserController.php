@@ -5,10 +5,24 @@
  */
 class UserController extends ApiPublicController
 {
-    public function actionSms()
+
+    public function actionTest()
     {
-        $sms = Sms::model()->postSms(15201920323, 111111);
-        var_dump($sms);
+        $string = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>"
+            ."<response><msgid>2c92825934837c4d0134837dcba00150</msgid>"
+            ."<result>0</result>"
+            ."<desc>提交成功</desc>"
+            ."<blacklist></blacklist>"
+            ."</response>";
+
+        $xml = simplexml_load_string($string);
+        $result = $xml->result;
+        if ($result == 0) {
+            var_dump($result);
+            echo "提交成功";
+        } else {
+            echo "失败";
+        }
     }
 
     /**
@@ -78,6 +92,14 @@ class UserController extends ApiPublicController
         }
         $params = substr($params, 0, -1);
         Log::model()->action_log($user_id = 0, $action_id, $params);
+
+        // 解析短信发送返回状态
+//        $result = simplexml_load_string(Sms::model()->postSms($mobile, $code))->result;
+//        if ($result == 0) {
+//            $this->_return('MSG_SUCCESS', $code);
+//        } else {
+//            $this->_return('MSG_ERR_FAIL_SEND_CODE');   // 短信发送异常(ps: 1.长时间不用被禁用；2：IP变化，联系大汉三通服务商修改IP)
+//        }
 
         $this->_return('MSG_SUCCESS', $code);
 

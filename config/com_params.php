@@ -12,7 +12,7 @@ return array(
     //教师端11
     'teacher_JPush' => array(
         // 极光推送 密钥
-        'app_key'           => 'ce3e08314fec6640e46fee9d',
-        'master_secret'     => 'e3940e54b076ea0368bde817'
+        'app_key'           => 'a7dc4017fe78574ff3efc79e',
+        'master_secret'     => '4ee9ac3465de119a0c57f7d4'
     ),
 );
