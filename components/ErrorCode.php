@@ -25,7 +25,7 @@ $_error_code = array(
         'MSG_ERR_PASSWORD_WRONG'			=> array('20008', '您输入的密码错误'),
         'MSG_ERR_FAIL_USER'					=> array('20009', '用户ID格式错误'),
         'MSG_ERR_TOKEN'						=> array('20010', 'token错误'),
-        'MSG_ERR_SALT_MOBILE'				=> array('20011', '口令对应的手机号码错误'),
+        'MSG_ERR_NAME_MOBILE'				=> array('20011', '学员名称对应的手机号码错误'),
         'MSG_ERR_INVALID_MEMBER'			=> array('20012', '口令对应用户memberId已绑定'),
         'MSG_ERR_OVER_MEMBER'				=> array('20013', '该用户已经绑定4个学员ID'),
         'MSG_ERR_FAIL_DATE_FORMAT'			=> array('20014', '日期格式错误'),
@@ -46,6 +46,8 @@ $_error_code = array(
 		'MSG_EXIST_LESSON_STUDENT_ID'		=> array('20029', '该课时已请过假'),
 		'MSG_ERR_FAIL_STUDENT_GRADE'		=> array('20030', '课时评分错误'),
 		'MSG_ERR_FAIL_SEND_CODE'			=> array('20031', '短信发送异常'),
+		'MSG_ERR_FAIL_LEAVE_TIME'			=> array('20032', '请提前至少1天请假'),
+		'MSG_ERR_FAIL_LESSON_EVAL_TIME'		=> array('20033', '出勤并且上课后才可课时评价'),
 
 
 	// 其它
