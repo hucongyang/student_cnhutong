@@ -163,12 +163,12 @@ class User extends CActiveRecord
     }
 
     /**
-     * 验证口令/手机号码对应的用户是否存在,存在则口令可以使用,不存在则口令不可使用
-     * @param $salt
+     * 验证学员名称/手机号码对应的用户是否存在
+     * @param $studentName
      * @param $mobile
      * @return bool
      */
-    public function verifySaltMobile($salt, $mobile)
+    public function verifyNameMobile($studentName, $mobile)
     {
         try {
             $con_user = Yii::app()->cnhutong;
@@ -176,7 +176,7 @@ class User extends CActiveRecord
             $id = $con_user->createCommand()
                 ->select('id')
                 ->from($table_name)
-                ->where('salt = :salt AND mobile = :mobile', array(':salt' => $salt, ':mobile' => $mobile))
+                ->where('name = :name AND mobile = :mobile', array(':name' => $studentName, ':mobile' => $mobile))
                 ->queryScalar();
         } catch (Exception $e) {
             error_log($e);

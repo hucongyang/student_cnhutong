@@ -160,9 +160,15 @@ class LessonController extends ApiPublicController
             $this->_return('MSG_ERR_FAIL_LESSON_STUDENT_ID');
         }
 
-//        if (Lesson::model()->isExistLessonStudentId($lessonStudentId)) {
-//            $this->_return('MSG_EXIST_LESSON_STUDENT_ID');
-//        }
+        // 规范提前请假时间
+        $leaveTime = Lesson::model()->isLessonLeaveTime($lessonStudentId);
+        if ( $leaveTime < 1) {
+            $this->_return('MSG_ERR_FAIL_LEAVE_TIME');
+        }
+
+        if (Lesson::model()->isExistLessonStudentId($lessonStudentId)) {
+            $this->_return('MSG_EXIST_LESSON_STUDENT_ID');
+        }
 
         if (!ctype_digit($memberId) || $memberId < 1) {
             $this->_return('MSG_NO_MEMBER');
@@ -232,6 +238,10 @@ class LessonController extends ApiPublicController
 
         if (!Lesson::model()->isExistId($lessonStudentId)) {
             $this->_return('MSG_NO_LESSON_STUDENT_ID');
+        }
+
+        if (!Lesson::model()->isLessonEval($lessonStudentId)) {
+            $this->_return('MSG_ERR_FAIL_LESSON_EVAL_TIME');
         }
 
         if (!in_array($studentGrade, array(1, 2, 3, 4, 5))) {

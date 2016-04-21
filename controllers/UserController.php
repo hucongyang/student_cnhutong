@@ -477,16 +477,16 @@ class UserController extends ApiPublicController
     public function actionBindMember()
     {
         if (!isset($_REQUEST['userId']) || !isset($_REQUEST['token'])
-        || !isset($_REQUEST['salt']) || !isset($_REQUEST['mobile'])
+        || !isset($_REQUEST['studentName']) || !isset($_REQUEST['mobile'])
         || !isset($_REQUEST['code']) || empty($_REQUEST['userId'])
-        || empty($_REQUEST['token']) || empty($_REQUEST['salt'])
+        || empty($_REQUEST['token']) || empty($_REQUEST['studentName'])
         || empty($_REQUEST['mobile']) || empty($_REQUEST['code'])) {
             $this->_return('MSG_ERR_LESS_PARAM');
         }
 
         $user_id = trim(Yii::app()->request->getParam('userId', null));
         $token = trim(Yii::app()->request->getParam('token', null));
-        $salt = trim(Yii::app()->request->getParam('salt', null));
+        $studentName = trim(Yii::app()->request->getParam('studentName', null));
         $mobile = trim(Yii::app()->request->getParam('mobile', null));
         $code = trim(Yii::app()->request->getParam('code', null));
 
@@ -510,10 +510,10 @@ class UserController extends ApiPublicController
             $this->_return('MSG_ERR_CODE');
         }
 
-        // 口令/手机号码 对应的用户是否存在
-        $memberId = User::model()->verifySaltMobile($salt, $mobile);
+        // 学员名称/手机号码 对应的用户是否存在
+        $memberId = User::model()->verifyNameMobile($studentName, $mobile);
         if (!$memberId) {
-            $this->_return('MSG_ERR_SALT_MOBILE');
+            $this->_return('MSG_ERR_NAME_MOBILE');
         }
 
         // 验证要添加的memberId是否和userId有绑定关系存在

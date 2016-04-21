@@ -247,6 +247,32 @@ class Lesson extends CActiveRecord
     }
 
     /**
+     * 根据课时id判断请假课时是否在规定请假时间内
+     * @param $lessonStudentId
+     * @return bool|int
+     */
+    public function isLessonLeaveTime($lessonStudentId)
+    {
+        $nowTime = date('Y-m-d H:m');
+        try {
+            $con_user = Yii::app()->cnhutong;
+            $result = $con_user->createCommand()
+                ->select('date, time')
+                ->from('ht_lesson_student')
+                ->where('id = :lessonStudentId', array(':lessonStudentId' => $lessonStudentId))
+                ->queryRow();
+
+            $leaveTime = $result['date'] . ' ' . substr($result['time'], 0, 5);
+            $days = intval((strtotime($leaveTime) - strtotime($nowTime)) / 86400);
+
+        } catch (Exception $e) {
+            error_log($e);
+            return false;
+        }
+        return $days;
+    }
+
+    /**
      * 课时id是否存在
      * @param $lessonStudentId
      * @return bool
@@ -293,5 +319,41 @@ class Lesson extends CActiveRecord
             return false;
         }
         return $result;
+    }
+
+    /**
+     * 根据课时id判断提交课时评价是否在规定时间内
+     * @param $lessonStudentId
+     * @return bool
+     */
+    public function isLessonEval($lessonStudentId)
+    {
+        $nowTime = date('Y-m-d H:m');
+        try {
+            $con_user = Yii::app()->cnhutong;
+            $result = $con_user->createCommand()
+                ->select('date, time')
+                ->from('ht_lesson_student')
+                ->where('id = :id and step in (0, 1)',
+                    array(
+                        ':id' => $lessonStudentId
+                    )
+                )
+                ->queryRow();
+            if ($result) {
+                $lessonEvalTime = $result['date'] . ' ' . substr($result['time'], 0, 5);
+                $days = (strtotime($lessonEvalTime) - strtotime($nowTime));
+                if ($days < 0) {
+                    return false;
+                }
+            } else {
+                return false;
+            }
+
+        } catch (Exception $e) {
+            error_log($e);
+            return false;
+        }
+        return true;
     }
 }
